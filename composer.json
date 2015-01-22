@@ -1,0 +1,16 @@
+{
+    "name"        : "twentyfirsthall/vagrant-puppet",
+    "description" : "Puppet modules for twentyfirsthall/vagrant-devbox",
+    "type"        : "project",
+    "keywords": [
+        "Vagrant",
+        "Puppet"
+    ],
+    "homepage"    : "https://github.com/twentyfirsthall/vagrant-puppet",
+    "license"     : "MIT",
+    "authors": [{
+        "name"    : "Geert Eltink",
+        "homepage": "https://xtreamwayz.github.io/",
+        "role"    : "Lead Developer"
+    }]
+}
