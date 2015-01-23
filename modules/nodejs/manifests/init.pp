@@ -3,7 +3,10 @@
 # Installs nodejs, npm and git.
 #
 class nodejs {
-  package { ['nodejs', 'npm', 'git-core']:
+  package { ['nodejs',
+             'nodejs-legacy',
+             'npm',
+             'git-core']:
     ensure => present
   }
 }
