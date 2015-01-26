@@ -49,9 +49,9 @@ class php {
   }
 
   exec { 'install-composer':
-    command => "curl -sS https://getcomposer.org/installer | php -- --install-dir=/tmp && mv /tmp/composer.phar /usr/bin/local/composer",
+    command => "curl -sS https://getcomposer.org/installer | php -- --install-dir=/tmp && mv /tmp/composer.phar /usr/local/bin/composer",
     path    => ['/bin', '/usr/bin'],
-    creates => "/usr/bin/local/composer",
+    creates => "/usr/local/bin/composer",
     require => File['/etc/php5/cli/php.ini'];
   }
 }
