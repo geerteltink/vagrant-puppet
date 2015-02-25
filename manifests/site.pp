@@ -23,7 +23,7 @@ class { 'mysql': }
 
 class { 'php': }
 
-class { 'nginx': }
+class { 'apache': }
 
 class { 'phpmyadmin': }
 
