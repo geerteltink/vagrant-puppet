@@ -51,11 +51,4 @@ class php {
     require => Package['php5-fpm', 'php5-mysql'],
     notify => Service['php5-fpm'];
   }
-
-  exec { 'install-composer':
-    command => "curl -sS https://getcomposer.org/installer | php -- --install-dir=/tmp && mv /tmp/composer.phar /usr/local/bin/composer",
-    path    => ['/bin', '/usr/bin'],
-    creates => "/usr/local/bin/composer",
-    require => File['/etc/php5/cli/php.ini'];
-  }
 }
