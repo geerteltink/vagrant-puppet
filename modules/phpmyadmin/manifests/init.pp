@@ -6,7 +6,7 @@
 class phpmyadmin {
 
   package { 'phpmyadmin':
-    ensure => present,
+    ensure => latest,
   }
 
   file {

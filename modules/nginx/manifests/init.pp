@@ -14,7 +14,7 @@ class nginx {
   }
 
   package { ['nginx']:
-    ensure => present
+    ensure => installed
   }
 
   service { 'nginx':

@@ -6,6 +6,6 @@ class nodejs {
   package { ['nodejs',
              'nodejs-legacy',
              'npm']:
-    ensure => present
+    ensure => installed
   }
 }
