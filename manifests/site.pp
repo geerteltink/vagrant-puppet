@@ -3,11 +3,6 @@ stage { 'pre':
   before => Stage['main']
 }
 
-# Add the baseconfig module to the new 'pre' run stage
-class { 'baseconfig':
-  stage => 'pre'
-}
-
 # Set defaults for file ownership/permissions
 File {
   owner => 'root',
@@ -17,4 +12,17 @@ File {
 
 debug("Starting devbox with hostname: ${::hostname}")
 
-include baseconfig, apache, mysql, php, phpmyadmin, phantomjs, nodejs
+# Add the baseconfig module to the new 'pre' run stage
+class { 'core::apt-update':
+  stage => 'pre'
+}
+
+class { 'mysql': }
+
+class { 'php': }
+
+class { 'nginx': }
+
+class { 'phpmyadmin': }
+
+class { 'phantomjs': }

@@ -10,7 +10,7 @@ class mysql {
   $database = $::hostname
 
   package { ['mysql-server']:
-    ensure => present
+    ensure => latest
   }
 
   service { 'mysql':

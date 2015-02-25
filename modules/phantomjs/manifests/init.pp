@@ -2,10 +2,8 @@
 #
 # Installs packages for PhantomJS as a deamon.
 #
-class phantomjs {
+class phantomjs ($latest_version = '1.9.8') {
 
-  # Latest phantomjs version
-  $latest_version = '1.9.8'
   $file_name = "phantomjs-${latest_version}-linux-x86_64"
   $download_url = "https://bitbucket.org/ariya/phantomjs/downloads/${file_name}.tar.bz2"
 
