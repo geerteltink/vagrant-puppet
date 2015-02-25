@@ -12,12 +12,12 @@ class php {
              'php5-mysql',
              'php5-sqlite',
              'php5-xdebug']:
-    ensure => present;
+    ensure => latest;
   }
 
   service { 'php5-fpm':
     ensure  => running,
-    require => Package['php5-fpm']
+    require => Package['php5-fpm'];
   }
 
   file {
@@ -50,5 +50,12 @@ class php {
     path    => ['/bin', '/usr/bin', '/usr/sbin'],
     require => Package['php5-fpm', 'php5-mysql'],
     notify => Service['php5-fpm'];
+  }
+
+  exec { 'install-composer':
+    command => "curl -sS https://getcomposer.org/installer | php -- --install-dir=/tmp && mv /tmp/composer.phar /usr/local/bin/composer",
+    path    => ['/bin', '/usr/bin'],
+    creates => "/usr/local/bin/composer",
+    require => File['/etc/php5/cli/php.ini'];
   }
 }
