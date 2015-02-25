@@ -8,10 +8,9 @@ server {
         sendfile        off;
         gzip            off;
 
-        index app.php index.php index.html;
-
         location / {
-                try_files $uri $uri/ /app.php /index.php =404;
+                index app.php index.php index.html;
+                try_files $uri $uri/ /app.php /index.php;
         }
 
         location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
@@ -22,9 +21,7 @@ server {
 
         # Deny access to hidden files
         location ~ /\. {
-                access_log off;
-                log_not_found off;
-                deny all;
+                return 404;
         }
 
         # Symfony dev
@@ -50,9 +47,8 @@ server {
         }
 
         location ~ \.php$ {
-                try_files       $uri =404;
                 fastcgi_pass    unix:/var/run/php5-fpm.sock;
-                include         fastcgi_params;
                 fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                include         fastcgi_params;
         }
 }
