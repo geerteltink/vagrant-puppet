@@ -17,6 +17,8 @@ class { 'core::apt-update':
   stage => 'pre'
 }
 
+class { 'core::git': }
+
 class { 'mysql': }
 
 class { 'php': }
@@ -26,3 +28,5 @@ class { 'nginx': }
 class { 'phpmyadmin': }
 
 class { 'phantomjs': }
+
+class { 'nodejs': }
