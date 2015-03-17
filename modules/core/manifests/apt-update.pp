@@ -1,6 +1,7 @@
 class core::apt-update {
   exec { 'apt-get update':
-    command     => "/usr/bin/apt-get update",
+    command     => "apt-get update",
+    path        => ['/usr/bin'],
     logoutput   => 'on_failure',
     timeout     => 300
   }

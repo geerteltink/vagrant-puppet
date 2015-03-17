@@ -38,6 +38,13 @@ class php {
       require => Package['php5-fpm'];
   }
 
+  exec { 'php5-fpm use tcp socket':
+    command => 'sudo sed -i "s/listen =.*/listen = 127.0.0.1:9000/" /etc/php5/fpm/pool.d/www.conf',
+    path    => ['/bin', '/usr/bin', '/usr/sbin'],
+    require => Package['php5-fpm'],
+    notify => Service['php5-fpm'];
+  }
+
   exec { 'enable-mcrypt':
     command => 'php5enmod mcrypt',
     path    => ['/bin', '/usr/bin', '/usr/sbin'],

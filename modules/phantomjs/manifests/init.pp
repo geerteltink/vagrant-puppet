@@ -8,7 +8,7 @@ class phantomjs ($latest_version = '1.9.8') {
   $download_url = "https://bitbucket.org/ariya/phantomjs/downloads/${file_name}.tar.bz2"
 
   package { ['libfontconfig1']:
-    ensure => present
+    ensure => installed
   }
 
   file { '/var/phantomjs':
