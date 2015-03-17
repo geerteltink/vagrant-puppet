@@ -267,8 +267,13 @@ package { $npm_packages:
     require  => Class['nodejs']
 }
 
-/*
-class { 'phpmyadmin': }
+#
+# PhantomJS
+#
+class { 'phantomjs':
+    latest_version => '1.9.8'
+}
 
-class { 'phantomjs': }
+/*
+TODO: class { 'phpmyadmin': }
 */
