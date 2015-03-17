@@ -1,83 +1,59 @@
-# == Class: nodejs
-#
-# Installs nodejs and npm.
-#
-class nodejs {
-  package { ['nodejs',
-             'nodejs-legacy',
-             'npm']:
-    ensure => installed
+# == Class: nodejs: See README.md for documentation.
+class nodejs(
+  $cmd_exe_path                = $nodejs::params::cmd_exe_path,
+  $legacy_debian_symlinks      = $nodejs::params::legacy_debian_symlinks,
+  $manage_package_repo         = $nodejs::params::manage_package_repo,
+  $nodejs_debug_package_ensure = $nodejs::params::nodejs_debug_package_ensure,
+  $nodejs_debug_package_name   = $nodejs::params::nodejs_debug_package_name,
+  $nodejs_dev_package_ensure   = $nodejs::params::nodejs_dev_package_ensure,
+  $nodejs_dev_package_name     = $nodejs::params::nodejs_dev_package_name,
+  $nodejs_package_ensure       = $nodejs::params::nodejs_package_ensure,
+  $nodejs_package_name         = $nodejs::params::nodejs_package_name,
+  $npm_package_ensure          = $nodejs::params::npm_package_ensure,
+  $npm_package_name            = $nodejs::params::npm_package_name,
+  $npm_path                    = $nodejs::params::npm_path,
+  $repo_class                  = $nodejs::params::repo_class,
+  $repo_enable_src             = $nodejs::params::repo_enable_src,
+  $repo_ensure                 = $nodejs::params::repo_ensure,
+  $repo_pin                    = $nodejs::params::repo_pin,
+  $repo_priority               = $nodejs::params::repo_priority,
+  $repo_proxy                  = $nodejs::params::repo_proxy,
+  $repo_proxy_password         = $nodejs::params::repo_proxy_password,
+  $repo_proxy_username         = $nodejs::params::repo_proxy_username,
+  $use_flags                   = $nodejs::params::use_flags,
+) inherits nodejs::params {
+
+  validate_bool($legacy_debian_symlinks)
+  validate_bool($manage_package_repo)
+
+  if $manage_package_repo and !$repo_class {
+    fail("${module_name}: The manage_package_repo parameter was set to true but no repo_class was provided.")
   }
 
-  exec { 'npm-bower':
-    command => 'npm install bower -g',
-    path    => ['/usr/bin'],
-    require => Package['nodejs-legacy', 'npm'];
+  if $nodejs_debug_package_name {
+    validate_string($nodejs_debug_package_name)
   }
 
-  exec { 'npm-gulp':
-    command => 'npm install gulp -g',
-    path    => ['/usr/bin'],
-    require => Package['nodejs-legacy', 'npm'];
+  if $nodejs_dev_package_name {
+    validate_string($nodejs_dev_package_name)
   }
 
-  exec { 'npm-less':
-    command => 'npm install less -g',
-    path    => ['/usr/bin'],
-    require => Package['nodejs-legacy', 'npm'];
+  if $npm_package_name {
+    validate_string($npm_package_name)
   }
 
-  exec { 'npm-uglifycss':
-    command => 'npm install uglifycss -g',
-    path    => ['/usr/bin'],
-    require => Package['nodejs-legacy', 'npm'];
-  }
+  validate_array($use_flags)
 
-  exec { 'npm-uglify-js':
-    command => 'npm install uglify-js -g',
-    path    => ['/usr/bin'],
-    require => Package['nodejs-legacy', 'npm'];
-  }
+  include '::nodejs::install'
 
-  exec { 'npm-jshint':
-    command => 'npm install jshint -g',
-    path    => ['/usr/bin'],
-    require => Package['nodejs-legacy', 'npm'];
-  }
+  anchor { '::nodejs::begin': }
+  anchor { '::nodejs::end': }
 
-  exec { 'npm-bower':
-    command => 'npm install bower -g',
-    path    => ['/usr/bin'],
-    require => Package['nodejs-legacy', 'npm'];
-  }
-
-  exec { 'npm-gulp':
-    command => 'npm install gulp -g',
-    path    => ['/usr/bin'],
-    require => Package['nodejs-legacy', 'npm'];
-  }
-
-  exec { 'npm-less':
-    command => 'npm install less -g',
-    path    => ['/usr/bin'],
-    require => Package['nodejs-legacy', 'npm'];
-  }
-
-  exec { 'npm-uglifycss':
-    command => 'npm install uglifycss -g',
-    path    => ['/usr/bin'],
-    require => Package['nodejs-legacy', 'npm'];
-  }
-
-  exec { 'npm-uglify-js':
-    command => 'npm install uglify-js -g',
-    path    => ['/usr/bin'],
-    require => Package['nodejs-legacy', 'npm'];
-  }
-
-  exec { 'npm-jshint':
-    command => 'npm install jshint -g',
-    path    => ['/usr/bin'],
-    require => Package['nodejs-legacy', 'npm'];
+  if $manage_package_repo {
+    include $repo_class
+    Anchor['::nodejs::begin'] ->
+    Class[$repo_class] ->
+    Class['::nodejs::install'] ->
+    Anchor['::nodejs::end']
   }
 }
