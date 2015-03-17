@@ -146,6 +146,79 @@ php::module { $phpModules: }
 $peclModules = ['xdebug']
 php::pecl::module { $peclModules: }
 
+# TODO: restart php5-fpm
+ini_setting { 'php-fpm-error_reporting':
+    ensure  => present,
+    path    => '/etc/php5/fpm/php.ini',
+    section => 'PHP',
+    setting => 'error_reporting',
+    value   => 'E_ALL'
+}
+
+ini_setting { 'php-fpm-display_errors':
+    ensure  => present,
+    path    => '/etc/php5/fpm/php.ini',
+    section => 'PHP',
+    setting => 'display_errors',
+    value   => 'On',
+}
+
+ini_setting { 'php-fpm-display_startup_errors':
+    ensure  => present,
+    path    => '/etc/php5/fpm/php.ini',
+    section => 'PHP',
+    setting => 'display_startup_errors',
+    value   => 'On',
+}
+
+ini_setting { 'php-fpm-track_errors':
+    ensure  => present,
+    path    => '/etc/php5/fpm/php.ini',
+    section => 'PHP',
+    setting => 'track_errors',
+    value   => 'On',
+}
+
+ini_setting { 'php-fpm-date_timezone':
+    ensure  => present,
+    path    => '/etc/php5/fpm/php.ini',
+    section => 'Date',
+    setting => 'date.timezone',
+    value   => 'Europe/Amsterdam',
+}
+
+ini_setting { 'xdebug-remote_enable':
+    ensure  => present,
+    path    => '/etc/php5/mods-available/xdebug.ini',
+    section => '',
+    setting => 'xdebug.remote_enable',
+    value   => 'On',
+}
+
+ini_setting { 'xdebug-remote_connect_back':
+    ensure  => present,
+    path    => '/etc/php5/mods-available/xdebug.ini',
+    section => '',
+    setting => 'xdebug.remote_connect_back',
+    value   => 'On',
+}
+
+ini_setting { 'xdebug-idekey':
+    ensure  => present,
+    path    => '/etc/php5/mods-available/xdebug.ini',
+    section => '',
+    setting => 'xdebug.idekey',
+    value   => 'vagrant',
+}
+
+ini_setting { 'xdebug-max_nesting_level':
+    ensure  => present,
+    path    => '/etc/php5/mods-available/xdebug.ini',
+    section => '',
+    setting => 'xdebug.max_nesting_level',
+    value   => 256,
+}
+
 #
 # MySQL
 #
