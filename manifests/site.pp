@@ -245,13 +245,13 @@ mysql::db { $::hostname:
     grant    => ['ALL']
 }
 
-/*
+#
 # Composer
-class { 'php::composer': }
-class { 'php::composer::auto_update':
-    max_age => 7
+#
+
+class { 'composer':
+    auto_update => true
 }
-*/
 
 #
 # nodejs
