@@ -1,36 +1,87 @@
 debug('Starting devbox with hostname: ${::hostname}')
 
+include stdlib
+
 # Set defaults for file ownership/permissions
 File {
-  owner => 'root',
-  group => 'root',
-  mode  => '0644'
+    owner => 'root',
+    group => 'root',
+    mode  => '0644'
 }
 
-# Install core packages
-$core_packages = [
-    'curl',
-    'git'
-]
+#
+# Update apt
+#
 
-package { $core_packages:
-    ensure => latest
-}
+/*
+# Enable access to the latest apache 2.4.10+
+apt::ppa { 'ppa:ondrej/apache2': }
+
+# Get the latest php 5.5.x
+apt::ppa { 'ppa:ondrej/php5': }
 
 # Update apt
 class { 'apt':
-    apt_update_frequency => 'weekly',
-    fancy_progress => true
+    always_apt_update    => true,
+    apt_update_frequency => 'weekly'
+}
+*/
+
+# Force apt update manually. For some reason the apt class from puppetlabs
+# seems to mess this up. It doesn't update before installing?
+class apt-force {
+    # Allow unauthenticated installs
+    file { '/etc/apt/apt.conf.d/99auth':
+        owner     => root,
+        group     => root,
+        content   => 'APT::Get::AllowUnauthenticated yes;',
+        mode      => 644,
+        before  => Exec['apt-get-update']
+    }
+
+    # Up-to-date Apache repo
+    exec { 'apt-repo apache2':
+        command => 'add-apt-repository ppa:ondrej/apache2',
+        path    => ['/usr/bin'],
+        before  => Exec['apt-get-update']
+    }
+
+    # Up-to-date PHP repo
+    exec { 'apt-repo php5':
+        command => 'add-apt-repository ppa:ondrej/php5',
+        path    => ['/usr/bin'],
+        before  => Exec['apt-get-update']
+    }
+
+    # Update
+    exec { 'apt-get-update':
+        command     => 'apt-get update',
+        path        => ['/usr/bin'],
+        logoutput   => 'on_failure',
+        timeout     => 300
+    }
+
+    # And upgrade
+    exec { 'apt-get-upgrade':
+        command     => '/usr/bin/apt-get -y upgrade',
+        logoutput   => 'on_failure',
+        refreshonly => true,
+        require     => Exec['apt-get-update']
+    }
 }
 
-# Enable access to the latest apache 2.4.10+
-apt::ppa { 'ppa:ondrej/apache2':
-    before => Class['apache'],
+# Force apt during the setup stage, before anything else
+class { 'apt-force':
+    stage => 'setup'
 }
 
-# Get the latest php 5.5.x
-apt::ppa { 'ppa:ondrej/php5':
-    before  => Class['php'],
+#
+# Core packages
+#
+
+$core_packages = ['curl', 'git']
+package { $core_packages:
+    ensure => latest
 }
 
 #
