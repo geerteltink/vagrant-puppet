@@ -261,11 +261,22 @@ class { '::mysql::server':
     override_options        => $mysql_options
 }
 
-mysql::db { $::hostname:
-    user     => $::hostname,
-    password => $::hostname,
-    host     => 'localhost',
-    grant    => ['ALL']
+if file('/vagrant/build/db-schema.sql', '/dev/null') != '' {
+    mysql::db { $::hostname:
+        user     => $::hostname,
+        password => $::hostname,
+        host     => 'localhost',
+        grant    => ['ALL'],
+        sql      => '/vagrant/build/db-schema.sql',
+        import_timeout => 900,
+    }
+} else {
+    mysql::db { $::hostname:
+        user     => $::hostname,
+        password => $::hostname,
+        host     => 'localhost',
+        grant    => ['ALL']
+    }
 }
 
 #
