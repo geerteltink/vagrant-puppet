@@ -1,12 +1,19 @@
 debug('Starting devbox with hostname: ${::hostname}')
 
+#
+# Set defaults
+#
+
 include stdlib
 
-# Set defaults for file ownership/permissions
 File {
     owner => 'root',
     group => 'root',
     mode  => '0644'
+}
+
+Exec {
+    path => '/usr/bin:/bin:/usr/sbin:/sbin'
 }
 
 #
@@ -14,15 +21,14 @@ File {
 #
 
 /*
-# Enable access to the latest apache 2.4.10+
+# Enable access to the latest versions
 apt::ppa { 'ppa:ondrej/apache2': }
-
-# Get the latest php 5.5.x
-apt::ppa { 'ppa:ondrej/php5': }
+apt::ppa { 'ppa:ondrej/php5-5.6': }
+apt::key { 'ondrej': key => 'E5267A6C' }
 
 # Update apt
 class { 'apt':
-    always_apt_update    => true,
+    #always_apt_update    => true,
     apt_update_frequency => 'weekly'
 }
 */
@@ -30,6 +36,7 @@ class { 'apt':
 # Force apt update manually. For some reason the apt class from puppetlabs
 # seems to mess this up. It doesn't update before installing?
 class apt-force {
+/*
     # Allow unauthenticated installs
     file { '/etc/apt/apt.conf.d/99auth':
         owner     => root,
@@ -38,32 +45,41 @@ class apt-force {
         mode      => 644,
         before  => Exec['apt-get-update']
     }
-
+*/
     # Up-to-date Apache repo
-    exec { 'apt-repo apache2':
+    exec { 'apt-repo apache':
         command => 'add-apt-repository ppa:ondrej/apache2',
-        path    => ['/usr/bin'],
         before  => Exec['apt-get-update']
     }
 
     # Up-to-date PHP repo
-    exec { 'apt-repo php5':
-        command => 'add-apt-repository ppa:ondrej/php5',
-        path    => ['/usr/bin'],
+    exec { 'apt-repo php':
+        command => 'add-apt-repository ppa:ondrej/php5-5.6',
+        before  => Exec['apt-get-update']
+    }
+
+    # Up-to-date MySQL
+    exec { 'apt-repo mysql':
+        command => 'add-apt-repository ppa:ondrej/mysql-5.6',
+        before  => Exec['apt-get-update']
+    }
+
+    # Sign ondrej sources
+    exec { 'apt-key ondrej':
+        command => 'apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E5267A6C',
         before  => Exec['apt-get-update']
     }
 
     # Update
     exec { 'apt-get-update':
         command     => 'apt-get update',
-        path        => ['/usr/bin'],
         logoutput   => 'on_failure',
         timeout     => 300
     }
 
     # And upgrade
     exec { 'apt-get-upgrade':
-        command     => '/usr/bin/apt-get -y upgrade',
+        command     => 'apt-get -y upgrade',
         logoutput   => 'on_failure',
         refreshonly => true,
         require     => Exec['apt-get-update']
@@ -146,77 +162,84 @@ php::module { $phpModules: }
 $peclModules = ['xdebug']
 php::pecl::module { $peclModules: }
 
-# TODO: restart php5-fpm
-ini_setting { 'php-fpm-error_reporting':
-    ensure  => present,
-    path    => '/etc/php5/fpm/php.ini',
-    section => 'PHP',
-    setting => 'error_reporting',
-    value   => 'E_ALL'
+# Set PHP config
+# TODO: trigger php5-fpm service
+class php-config {
+    ini_setting { 'php-fpm-error_reporting':
+        ensure  => present,
+        path    => '/etc/php5/fpm/php.ini',
+        section => 'PHP',
+        setting => 'error_reporting',
+        value   => 'E_ALL'
+    }
+
+    ini_setting { 'php-fpm-display_errors':
+        ensure  => present,
+        path    => '/etc/php5/fpm/php.ini',
+        section => 'PHP',
+        setting => 'display_errors',
+        value   => 'On',
+    }
+
+    ini_setting { 'php-fpm-display_startup_errors':
+        ensure  => present,
+        path    => '/etc/php5/fpm/php.ini',
+        section => 'PHP',
+        setting => 'display_startup_errors',
+        value   => 'On',
+    }
+
+    ini_setting { 'php-fpm-track_errors':
+        ensure  => present,
+        path    => '/etc/php5/fpm/php.ini',
+        section => 'PHP',
+        setting => 'track_errors',
+        value   => 'On',
+    }
+
+    ini_setting { 'php-fpm-date_timezone':
+        ensure  => present,
+        path    => '/etc/php5/fpm/php.ini',
+        section => 'Date',
+        setting => 'date.timezone',
+        value   => 'Europe/Amsterdam',
+    }
+
+    ini_setting { 'xdebug-remote_enable':
+        ensure  => present,
+        path    => '/etc/php5/mods-available/xdebug.ini',
+        section => '',
+        setting => 'xdebug.remote_enable',
+        value   => 'On',
+    }
+
+    ini_setting { 'xdebug-remote_connect_back':
+        ensure  => present,
+        path    => '/etc/php5/mods-available/xdebug.ini',
+        section => '',
+        setting => 'xdebug.remote_connect_back',
+        value   => 'On',
+    }
+
+    ini_setting { 'xdebug-idekey':
+        ensure  => present,
+        path    => '/etc/php5/mods-available/xdebug.ini',
+        section => '',
+        setting => 'xdebug.idekey',
+        value   => 'vagrant',
+    }
+
+    ini_setting { 'xdebug-max_nesting_level':
+        ensure  => present,
+        path    => '/etc/php5/mods-available/xdebug.ini',
+        section => '',
+        setting => 'xdebug.max_nesting_level',
+        value   => 256,
+    }
 }
 
-ini_setting { 'php-fpm-display_errors':
-    ensure  => present,
-    path    => '/etc/php5/fpm/php.ini',
-    section => 'PHP',
-    setting => 'display_errors',
-    value   => 'On',
-}
-
-ini_setting { 'php-fpm-display_startup_errors':
-    ensure  => present,
-    path    => '/etc/php5/fpm/php.ini',
-    section => 'PHP',
-    setting => 'display_startup_errors',
-    value   => 'On',
-}
-
-ini_setting { 'php-fpm-track_errors':
-    ensure  => present,
-    path    => '/etc/php5/fpm/php.ini',
-    section => 'PHP',
-    setting => 'track_errors',
-    value   => 'On',
-}
-
-ini_setting { 'php-fpm-date_timezone':
-    ensure  => present,
-    path    => '/etc/php5/fpm/php.ini',
-    section => 'Date',
-    setting => 'date.timezone',
-    value   => 'Europe/Amsterdam',
-}
-
-ini_setting { 'xdebug-remote_enable':
-    ensure  => present,
-    path    => '/etc/php5/mods-available/xdebug.ini',
-    section => '',
-    setting => 'xdebug.remote_enable',
-    value   => 'On',
-}
-
-ini_setting { 'xdebug-remote_connect_back':
-    ensure  => present,
-    path    => '/etc/php5/mods-available/xdebug.ini',
-    section => '',
-    setting => 'xdebug.remote_connect_back',
-    value   => 'On',
-}
-
-ini_setting { 'xdebug-idekey':
-    ensure  => present,
-    path    => '/etc/php5/mods-available/xdebug.ini',
-    section => '',
-    setting => 'xdebug.idekey',
-    value   => 'vagrant',
-}
-
-ini_setting { 'xdebug-max_nesting_level':
-    ensure  => present,
-    path    => '/etc/php5/mods-available/xdebug.ini',
-    section => '',
-    setting => 'xdebug.max_nesting_level',
-    value   => 256,
+class { 'php-config':
+    require => Class['php']
 }
 
 #
