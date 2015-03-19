@@ -1,5 +1,3 @@
-debug('Starting devbox with hostname: ${::hostname}')
-
 #
 # Set defaults
 #
@@ -20,7 +18,7 @@ Exec {
 # Update apt
 #
 
-# Apt update once a week
+# Run apt-get update only once a week
 exec { 'apt-update':
     command     => 'apt-get update',
     logoutput   => 'on_failure',
@@ -28,7 +26,7 @@ exec { 'apt-update':
     onlyif      => '/bin/bash -c "exit $(( $(( $(date +%s) - $(stat -c %Y /var/cache/apt/pkgcache.bin) )) <= 604800 ))"'
 } -> Package <| |>
 
-# Force apt-get updates
+# Run apt-get updates when forced (in apt-repo or apt-key)
 exec { 'apt-update-force':
     command     => 'apt-get update',
     logoutput   => 'on_failure',
@@ -54,7 +52,6 @@ exec { 'apt-repo mysql':
     notify  => Exec['apt-update-force']
 }
 
-# Sign ondrej sources
 exec { 'apt-key ondrej':
     command => 'apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 14AA40EC0831756756D7F66C4F4EA0AAE5267A6C',
     unless  => 'apt-key list | /bin/grep 1024R/E5267A6C',
@@ -74,13 +71,9 @@ package { $core_packages:
 # Apache
 #
 
-# Install apache
 class { 'apache':
     default_vhost => false,
-    #mpm_module => false,
 }
-#class { 'apache::mod::prefork': }
-#class { 'apache::mod::php': }
 
 # The missing mod_proxy_fcgi class
 class apache::mod::proxy_fcgi {
@@ -93,7 +86,7 @@ apache::mod { 'rewrite': }
 apache::mod { 'proxy': }
 apache::mod { 'proxy_fcgi': }
 
-# Setup vhost
+# Setup default vhost for the vagrant dir
 apache::vhost { $::fqdn:
     default_vhost => true,
     port          => '80',
@@ -119,7 +112,6 @@ apache::vhost { $::fqdn:
 # PHP
 #
 
-# Install php
 class { 'php': }
 
 # Install php extensions
@@ -130,7 +122,7 @@ php::module { $phpModules: }
 $peclModules = ['xdebug']
 php::pecl::module { $peclModules: }
 
-# PHP-FPM service so we can trigger restarts when needed
+# PHP-FPM service wrapper so we can trigger restarts when needed
 service { 'php-fpm':
     name        => 'php5-fpm',
     ensure      => running,
@@ -220,7 +212,6 @@ class { 'composer':
 
 class { 'nodejs': }
 
-# Install npm packages
 $npm_packages = ['bower', 'gulp', 'less', 'uglifycss', 'uglify-js', 'jshint']
 package { $npm_packages:
     ensure   => present,
@@ -234,7 +225,3 @@ package { $npm_packages:
 class { 'phantomjs':
     latest_version => '1.9.8'
 }
-
-/*
-TODO: class { 'phpmyadmin': }
-*/
