@@ -120,9 +120,7 @@ apache::vhost { $::fqdn:
 #
 
 # Install php
-class { 'php':
-    service => 'apache2'
-}
+class { 'php': }
 
 # Install php extensions
 $phpModules = ['cli', 'fpm', 'curl', 'gd', 'intl', 'mcrypt', 'mysql', 'sqlite']
@@ -132,84 +130,43 @@ php::module { $phpModules: }
 $peclModules = ['xdebug']
 php::pecl::module { $peclModules: }
 
-# Set PHP config
-# TODO: trigger php5-fpm service
-class php-config {
-    ini_setting { 'php-fpm-error_reporting':
-        ensure  => present,
-        path    => '/etc/php5/fpm/php.ini',
-        section => 'PHP',
-        setting => 'error_reporting',
-        value   => 'E_ALL'
-    }
-
-    ini_setting { 'php-fpm-display_errors':
-        ensure  => present,
-        path    => '/etc/php5/fpm/php.ini',
-        section => 'PHP',
-        setting => 'display_errors',
-        value   => 'On',
-    }
-
-    ini_setting { 'php-fpm-display_startup_errors':
-        ensure  => present,
-        path    => '/etc/php5/fpm/php.ini',
-        section => 'PHP',
-        setting => 'display_startup_errors',
-        value   => 'On',
-    }
-
-    ini_setting { 'php-fpm-track_errors':
-        ensure  => present,
-        path    => '/etc/php5/fpm/php.ini',
-        section => 'PHP',
-        setting => 'track_errors',
-        value   => 'On',
-    }
-
-    ini_setting { 'php-fpm-date_timezone':
-        ensure  => present,
-        path    => '/etc/php5/fpm/php.ini',
-        section => 'Date',
-        setting => 'date.timezone',
-        value   => 'Europe/Amsterdam',
-    }
-
-    ini_setting { 'xdebug-remote_enable':
-        ensure  => present,
-        path    => '/etc/php5/mods-available/xdebug.ini',
-        section => '',
-        setting => 'xdebug.remote_enable',
-        value   => 'On',
-    }
-
-    ini_setting { 'xdebug-remote_connect_back':
-        ensure  => present,
-        path    => '/etc/php5/mods-available/xdebug.ini',
-        section => '',
-        setting => 'xdebug.remote_connect_back',
-        value   => 'On',
-    }
-
-    ini_setting { 'xdebug-idekey':
-        ensure  => present,
-        path    => '/etc/php5/mods-available/xdebug.ini',
-        section => '',
-        setting => 'xdebug.idekey',
-        value   => 'vagrant',
-    }
-
-    ini_setting { 'xdebug-max_nesting_level':
-        ensure  => present,
-        path    => '/etc/php5/mods-available/xdebug.ini',
-        section => '',
-        setting => 'xdebug.max_nesting_level',
-        value   => 256,
-    }
+# PHP-FPM service so we can trigger restarts when needed
+service { 'php-fpm':
+    name        => 'php5-fpm',
+    ensure      => running,
+    hasstatus   => true,
+    hasrestart  => true,
+    enable      => true,
+    require     => Package['PhpModule_fpm']
 }
 
-class { 'php-config':
-    require => Class['php']
+# PHP-FPM configuration
+augeas { 'php-fpm-ini':
+    lens => 'PHP.lns',
+    incl => '/etc/php5/fpm/php.ini',
+    changes => [
+        'set PHP/error_reporting E_ALL',
+        'set PHP/display_errors On',
+        'set PHP/display_startup_errors On',
+        'set PHP/track_errors On',
+        'set Date/date.timezone Europe/Amsterdam',
+    ],
+    require => Package['PhpModule_fpm'],
+    notify => Service['php-fpm']
+}
+
+# PHP xdebug configuration
+augeas { 'php-xdebug-ini':
+    lens => 'PHP.lns',
+    incl => '/etc/php5/mods-available/xdebug.ini',
+    changes => [
+        'set .anon/xdebug.remote_enable On',
+        'set .anon/xdebug.remote_connect_back On',
+        'set .anon/xdebug.idekey vagrant',
+        'set .anon/xdebug.max_nesting_level 256',
+    ],
+    require => Package['php-xdebug'],
+    notify => Service['php-fpm']
 }
 
 #
