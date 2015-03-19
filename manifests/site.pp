@@ -20,67 +20,45 @@ Exec {
 # Update apt
 #
 
-/*
-# Enable access to the latest versions
-apt::ppa { 'ppa:ondrej/apache2': }
-apt::ppa { 'ppa:ondrej/php5-5.6': }
-apt::key { 'ondrej': key => 'E5267A6C' }
+# Apt update once a week
+exec { 'apt-update':
+    command     => 'apt-get update',
+    logoutput   => 'on_failure',
+    timeout     => 300,
+    onlyif      => '/bin/bash -c "exit $(( $(( $(date +%s) - $(stat -c %Y /var/cache/apt/pkgcache.bin) )) <= 604800 ))"'
+} -> Package <| |>
 
-# Update apt
-class { 'apt':
-    #always_apt_update    => true,
-    apt_update_frequency => 'weekly'
-}
-*/
+# Force apt-get updates
+exec { 'apt-update-force':
+    command     => 'apt-get update',
+    logoutput   => 'on_failure',
+    timeout     => 300,
+    refreshonly => true
+} -> Package <| |>
 
-# Force apt update manually. For some reason the apt class from puppetlabs
-# seems to mess this up. It doesn't update before installing?
-class apt-force {
-/*
-    # Allow unauthenticated installs
-    file { '/etc/apt/apt.conf.d/99auth':
-        owner     => root,
-        group     => root,
-        content   => 'APT::Get::AllowUnauthenticated yes;',
-        mode      => 644,
-        before  => Exec['apt-get-update']
-    }
-*/
-    # Up-to-date Apache repo
-    exec { 'apt-repo apache':
-        command => 'add-apt-repository ppa:ondrej/apache2',
-        before  => Exec['apt-get-update']
-    }
-
-    # Up-to-date PHP repo
-    exec { 'apt-repo php':
-        command => 'add-apt-repository ppa:ondrej/php5-5.6',
-        before  => Exec['apt-get-update']
-    }
-
-    # Up-to-date MySQL
-    exec { 'apt-repo mysql':
-        command => 'add-apt-repository ppa:ondrej/mysql-5.6',
-        before  => Exec['apt-get-update']
-    }
-
-    # Sign ondrej sources
-    exec { 'apt-key ondrej':
-        command => 'apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E5267A6C',
-        before  => Exec['apt-get-update']
-    }
-
-    # Update
-    exec { 'apt-get-update':
-        command     => 'apt-get update',
-        logoutput   => 'on_failure',
-        timeout     => 300
-    }
+exec { 'apt-repo apache':
+    command => 'add-apt-repository ppa:ondrej/apache2',
+    creates => '/etc/apt/sources.list.d/ondrej-apache2-trusty.list',
+    notify  => Exec['apt-update-force']
 }
 
-# Force apt during the setup stage, before anything else
-class { 'apt-force':
-    stage => 'setup'
+exec { 'apt-repo php':
+    command => 'add-apt-repository ppa:ondrej/php5-5.6',
+    creates => '/etc/apt/sources.list.d/ondrej-php5-5_6-trusty.list',
+    notify  => Exec['apt-update-force']
+}
+
+exec { 'apt-repo mysql':
+    command => 'add-apt-repository ppa:ondrej/mysql-5.6',
+    creates => '/etc/apt/sources.list.d/ondrej-mysql-5_6-trusty.list',
+    notify  => Exec['apt-update-force']
+}
+
+# Sign ondrej sources
+exec { 'apt-key ondrej':
+    command => 'apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 14AA40EC0831756756D7F66C4F4EA0AAE5267A6C',
+    unless  => 'apt-key list | /bin/grep 1024R/E5267A6C',
+    notify  => Exec['apt-update-force']
 }
 
 #
