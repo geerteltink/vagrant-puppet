@@ -76,14 +76,6 @@ class apt-force {
         logoutput   => 'on_failure',
         timeout     => 300
     }
-
-    # And upgrade
-    exec { 'apt-get-upgrade':
-        command     => 'apt-get -y upgrade',
-        logoutput   => 'on_failure',
-        refreshonly => true,
-        require     => Exec['apt-get-update']
-    }
 }
 
 # Force apt during the setup stage, before anything else
