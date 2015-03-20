@@ -12,7 +12,7 @@ define apt::key (
 
     exec { "apt-key-$fingerprint":
         command     => "apt-key adv --keyserver keyserver.ubuntu.com --recv-keys $fingerprint",
-        unless      => "apt-key list | /bin/grep 1024R/$key",
+        unless      => "apt-key list | /bin/grep $key",
         logoutput   => 'on_failure',
         notify      => Exec['apt-update']
     }
