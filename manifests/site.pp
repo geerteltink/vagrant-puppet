@@ -209,7 +209,7 @@ class { 'composer':
 #
 # nodejs
 #
-
+/*
 class { 'nodejs': }
 
 $npm_packages = ['bower', 'gulp', 'less', 'uglifycss', 'uglify-js', 'jshint']
@@ -218,7 +218,7 @@ package { $npm_packages:
     provider => 'npm',
     require  => Class['nodejs']
 }
-
+*/
 #
 # PhantomJS
 #
