@@ -1,14 +1,14 @@
 require 'facter'
 
-#This is derived from the file /var/lib/apt/periodic/update-success-stamp
+# The last update time is derived from the file /var/cache/apt/pkgcache.bin.
 # This is generated upon a successful apt-get update run natively in ubuntu.
-# the Puppetlabs-apt module deploys this same functionality for other debian-ish OSes
+# The apt module deploys this same functionality for other debian-ish OSes.
 Facter.add('apt_update_last_success') do
   confine :osfamily => 'Debian'
   setcode do
-    if File.exists?('/var/lib/apt/periodic/update-success-stamp')
+    if File.exists?('/var/cache/apt/pkgcache.bin')
       #get epoch time
-      lastsuccess = File.mtime('/var/lib/apt/periodic/update-success-stamp').to_i
+      lastsuccess = File.mtime('/var/cache/apt/pkgcache.bin').to_i
       lastsuccess
     else
       lastsuccess = -1

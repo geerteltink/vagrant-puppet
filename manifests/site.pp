@@ -1,4 +1,12 @@
 #
+# Development references
+#
+# https://docs.puppetlabs.com/references/latest/type.html
+# https://docs.puppetlabs.com/references/latest/function.html
+# http://manpages.ubuntu.com/manpages/hardy/man1/test.1posix.html
+#
+
+#
 # Set defaults
 #
 
@@ -18,45 +26,12 @@ Exec {
 # Update apt
 #
 
-# Run apt-get update only once a week
-exec { 'apt-update':
-    command     => 'apt-get update',
-    logoutput   => 'on_failure',
-    timeout     => 300,
-    onlyif      => '/bin/bash -c "exit $(( $(( $(date +%s) - $(stat -c %Y /var/cache/apt/pkgcache.bin) )) <= 604800 ))"'
-} -> Package <| |>
+include apt
 
-# Run apt-get updates when forced (in apt-repo or apt-key)
-exec { 'apt-update-force':
-    command     => 'apt-get update',
-    logoutput   => 'on_failure',
-    timeout     => 300,
-    refreshonly => true
-} -> Package <| |>
-
-exec { 'apt-repo apache':
-    command => 'add-apt-repository ppa:ondrej/apache2',
-    creates => '/etc/apt/sources.list.d/ondrej-apache2-trusty.list',
-    notify  => Exec['apt-update-force']
-}
-
-exec { 'apt-repo php':
-    command => 'add-apt-repository ppa:ondrej/php5-5.6',
-    creates => '/etc/apt/sources.list.d/ondrej-php5-5_6-trusty.list',
-    notify  => Exec['apt-update-force']
-}
-
-exec { 'apt-repo mysql':
-    command => 'add-apt-repository ppa:ondrej/mysql-5.6',
-    creates => '/etc/apt/sources.list.d/ondrej-mysql-5_6-trusty.list',
-    notify  => Exec['apt-update-force']
-}
-
-exec { 'apt-key ondrej':
-    command => 'apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 14AA40EC0831756756D7F66C4F4EA0AAE5267A6C',
-    unless  => 'apt-key list | /bin/grep 1024R/E5267A6C',
-    notify  => Exec['apt-update-force']
-}
+apt::ppa { 'ppa:ondrej/apache2': }
+apt::ppa { 'ppa:ondrej/php5-5.6': }
+apt::ppa { 'ppa:ondrej/mysql-5.6': }
+apt::key { '14AA40EC0831756756D7F66C4F4EA0AAE5267A6C': }
 
 #
 # Core packages
