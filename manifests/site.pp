@@ -182,21 +182,22 @@ class { 'composer':
 }
 
 #
-# nodejs
-#
-/*
-class { 'nodejs': }
-
-$npm_packages = ['bower', 'gulp', 'less', 'uglifycss', 'uglify-js', 'jshint']
-package { $npm_packages:
-    ensure   => present,
-    provider => 'npm',
-    require  => Class['nodejs']
-}
-*/
-#
 # PhantomJS
 #
+
 class { 'phantomjs':
     latest_version => '1.9.8'
 }
+
+#
+# nodejs
+#
+
+include nodejs
+
+nodejs::npm { 'bower': }
+nodejs::npm { 'gulp': }
+nodejs::npm { 'jshint': }
+nodejs::npm { 'less': }
+nodejs::npm { 'uglify-js': }
+nodejs::npm { 'uglifycss': }
