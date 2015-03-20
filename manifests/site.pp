@@ -185,9 +185,7 @@ class { 'composer':
 # PhantomJS
 #
 
-class { 'phantomjs':
-    latest_version => '1.9.8'
-}
+include phantomjs
 
 #
 # nodejs
