@@ -2,7 +2,7 @@ define nodejs::npm (
     $module      = $title,
     $ensure      = present,
     $options     = '-g',
-    $modules_dir = '/usr/local/lib'
+    $modules_dir = '/usr/lib'
 ) {
 
     $validate = "${modules_dir}/node_modules/${module}:${module}"
