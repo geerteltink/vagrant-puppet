@@ -37,7 +37,7 @@ apt::key { '14AA40EC0831756756D7F66C4F4EA0AAE5267A6C': }
 # Core packages
 #
 
-$core_packages = ['curl', 'git']
+$core_packages = ['curl', 'git', 'wget']
 package { $core_packages:
     ensure => latest
 }

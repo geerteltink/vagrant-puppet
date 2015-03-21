@@ -11,6 +11,12 @@ class phantomjs ($version = '1.9.8') {
         ensure => installed
     }
 
+    if $::kernel == 'Linux' {
+        if ! defined(Package['wget']) {
+            package { 'wget': ensure => installed }
+        }
+    }
+
     file { '/var/phantomjs':
         ensure => directory,
         before => Exec['phantomjs-retrieve'];
@@ -20,7 +26,7 @@ class phantomjs ($version = '1.9.8') {
         command => "wget $download_url -O /var/phantomjs/${file_name}.tar.bz2",
         path    => ['/bin', '/usr/bin'],
         creates => "/var/phantomjs/${file_name}.tar.bz2",
-        require => Package['libfontconfig1'];
+        require => Package['libfontconfig1', 'wget'];
     }
 
     exec { 'phantomjs-unpack':
