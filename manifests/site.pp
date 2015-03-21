@@ -27,6 +27,7 @@ Exec {
 #
 
 include apt
+include apt::upgrade
 
 apt::ppa { 'ppa:ondrej/apache2': }
 apt::ppa { 'ppa:ondrej/php5-5.6': }
