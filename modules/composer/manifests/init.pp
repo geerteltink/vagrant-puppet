@@ -1,76 +1,53 @@
-# = Class: composer
-#
-# == Parameters:
-#
-# [*target_dir*]
-#   Where to install the composer executable.
-#
-# [*command_name*]
-#   The name of the composer executable.
-#
-# [*user*]
-#   The owner of the composer executable.
-#
-# [*auto_update*]
-#   Whether to run `composer self-update`.
-#
-# == Example:
-#
-#   include composer
-#
-#   class { 'composer':
-#     'target_dir'   => '/usr/local/bin',
-#     'user'         => 'root',
-#     'command_name' => 'composer',
-#     'auto_update'  => true
-#   }
-#
 class composer (
-  $target_dir   = 'UNDEF',
-  $command_name = 'UNDEF',
-  $user         = 'UNDEF',
-  $auto_update  = false
-) {
+    $target_dir     = $composer::params::target_dir,
+    $composer_file  = $composer::params::composer_file,
+    $frequency      = $composer::params::update_frequency,
+    $tmp_path       = $composer::params::tmp_path,
+    $php_package    = $composer::params::php_package,
+) inherits composer::params {
 
-  include composer::params
+    validate_integer($frequency)
 
-  $composer_target_dir = $target_dir ? {
-    'UNDEF' => $::composer::params::target_dir,
-    default => $target_dir
-  }
-
-  $composer_command_name = $command_name ? {
-    'UNDEF' => $::composer::params::command_name,
-    default => $command_name
-  }
-
-  $composer_user = $user ? {
-    'UNDEF' => $::composer::params::user,
-    default => $user
-  }
-
-  wget::fetch { 'composer-install':
-    source      => $::composer::params::phar_location,
-    destination => "${composer_target_dir}/${composer_command_name}",
-    execuser    => $composer_user,
-  }
-
-  exec { 'composer-fix-permissions':
-    command => "chmod a+x ${composer_command_name}",
-    path    => '/usr/bin:/bin:/usr/sbin:/sbin',
-    cwd     => $composer_target_dir,
-    user    => $composer_user,
-    unless  => "test -x ${composer_target_dir}/${composer_command_name}",
-    require => Wget::Fetch['composer-install'],
-  }
-
-  if $auto_update {
-    exec { 'composer-update':
-      command     => "${composer_command_name} self-update",
-      environment => [ "COMPOSER_HOME=${composer_target_dir}" ],
-      path        => "/usr/bin:/bin:/usr/sbin:/sbin:${composer_target_dir}",
-      user        => $composer_user,
-      require     => Exec['composer-fix-permissions'],
+    if ! defined(Package['wget']) {
+        package { 'wget': ensure => installed }
     }
-  }
+
+    # check if directory exists
+    if defined(File[$target_dir]) == false {
+        file { $target_dir:
+            ensure => directory
+        }
+    }
+
+    if defined(File["${target_dir}/${composer_file}"]) == false {
+        exec { 'composer-download':
+            command   => "wget $::composer::params::phar_location -O ${tmp_path}/composer.phar",
+            cwd       => $tmp_path,
+            require   => Package['wget', $php_package],
+            creates   => "${tmp_path}/composer.phar",
+            logoutput => 'on_failure'
+        }
+        # move file to target_dir
+        file { "${target_dir}/${composer_file}":
+            ensure    => present,
+            source    => "${tmp_path}/composer.phar",
+            require   => [ Exec['composer-download'], File[$target_dir] ],
+            mode      => '0755'
+        }
+    }
+
+    $threshold = (strftime('%s') - $frequency)
+
+    # If the file is older than the threshold, update it
+    if $::apt_update_last_success < $threshold {
+        notice('Composer needs an update')
+        exec { 'composer-selfupdate':
+            command     => "${target_dir}/${composer_file} selfupdate",
+            tries       => 3,
+            timeout     => 1,
+            environment => "COMPOSER_HOME=$::composer::params::composer_home",
+        }
+
+        Package[$php_package] -> File<| title=="${target_dir}/${composer_file}" |> -> Exec['composer-selfupdate']
+    }
 }

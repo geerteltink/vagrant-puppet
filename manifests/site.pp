@@ -174,22 +174,12 @@ if file('/vagrant/build/db-schema.sql', '/dev/null') != '' {
 }
 
 #
-# Composer
+# Extra packages
 #
 
-class { 'composer':
-    auto_update => true
-}
-
-#
-# PhantomJS
-#
+include composer
 
 include phantomjs
-
-#
-# nodejs
-#
 
 include nodejs
 
