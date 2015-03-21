@@ -40,7 +40,6 @@ class composer (
 
     # If the file is older than the threshold, update it
     if $::apt_update_last_success < $threshold {
-        notice('Composer needs an update')
         exec { 'composer-selfupdate':
             command     => "${target_dir}/${composer_file} selfupdate",
             tries       => 3,
