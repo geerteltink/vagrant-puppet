@@ -81,60 +81,29 @@ apache::vhost { $::fqdn:
             require         => 'all granted',
             directoryindex  => 'index.php index.html'
         }
-    ],
+    ]
 }
 
 #
 # PHP
 #
 
-class { 'php': }
+include php::cli
+include php::fpm
 
-# Install php extensions
-$phpModules = ['cli', 'fpm', 'curl', 'gd', 'intl', 'mcrypt', 'mysql', 'sqlite']
-php::module { $phpModules: }
-
-# Install PECL extensions
-$peclModules = ['xdebug']
-php::pecl::module { $peclModules: }
-
-# PHP-FPM service wrapper so we can trigger restarts when needed
-service { 'php-fpm':
-    name        => 'php5-fpm',
-    ensure      => running,
-    hasstatus   => true,
-    hasrestart  => true,
-    enable      => true,
-    require     => Package['PhpModule_fpm']
-}
-
-# PHP-FPM configuration
-augeas { 'php-fpm-ini':
-    lens => 'PHP.lns',
-    incl => '/etc/php5/fpm/php.ini',
-    changes => [
-        'set PHP/error_reporting E_ALL',
-        'set PHP/display_errors On',
-        'set PHP/display_startup_errors On',
-        'set PHP/track_errors On',
-        'set Date/date.timezone Europe/Amsterdam',
-    ],
-    require => Package['PhpModule_fpm'],
-    notify => Service['php-fpm']
-}
-
-# PHP xdebug configuration
-augeas { 'php-xdebug-ini':
-    lens => 'PHP.lns',
-    incl => '/etc/php5/mods-available/xdebug.ini',
-    changes => [
+php::ext { 'curl': }
+php::ext { 'gd': }
+php::ext { 'intl': }
+php::ext { 'mcrypt': }
+php::ext { 'mysql': }
+php::ext { 'sqlite': }
+php::ext { 'xdebug':
+    ini_changes => [
         'set .anon/xdebug.remote_enable On',
         'set .anon/xdebug.remote_connect_back On',
         'set .anon/xdebug.idekey vagrant',
         'set .anon/xdebug.max_nesting_level 256',
-    ],
-    require => Package['php-xdebug'],
-    notify => Service['php-fpm']
+    ]
 }
 
 #
@@ -178,6 +147,7 @@ if file('/vagrant/build/db-schema.sql', '/dev/null') != '' {
 # Extra packages
 #
 
+# TODO: Move composer into php module since it is a dependency
 include composer
 
 include phantomjs
