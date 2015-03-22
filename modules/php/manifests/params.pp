@@ -18,4 +18,8 @@ class php::params {
     ]
 
     $ext_path   = '/etc/php5/mods-available'
+
+    $composer_source  = 'https://getcomposer.org/composer.phar'
+    $composer_target  = '/usr/local/bin/composer'
+    $composer_max_age = 7
 }

@@ -90,6 +90,7 @@ apache::vhost { $::fqdn:
 
 include php::cli
 include php::fpm
+include php::composer
 
 php::ext { 'curl': }
 php::ext { 'gd': }
@@ -146,9 +147,6 @@ if file('/vagrant/build/db-schema.sql', '/dev/null') != '' {
 #
 # Extra packages
 #
-
-# TODO: Move composer into php module since it is a dependency
-include composer
 
 include phantomjs
 
