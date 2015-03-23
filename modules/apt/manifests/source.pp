@@ -31,7 +31,7 @@ define apt::source (
         group   => root,
         mode    => '0644',
         content => template('apt/_header.erb', 'apt/source.list.erb'),
-        notify  => Exec['apt-update'],
+        notify  => Exec['apt-update']
     }
 
     if ($required_packages != false) and ($ensure == 'present') {

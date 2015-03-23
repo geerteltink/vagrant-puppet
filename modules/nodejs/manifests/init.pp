@@ -12,7 +12,7 @@ class nodejs (
             key_source        => 'https://deb.nodesource.com/gpgkey/nodesource.gpg.key',
             location          => 'https://deb.nodesource.com/node_0.12',
             repos             => 'main',
-            required_packages => 'apt-transport-https ca-certificates',
+            required_packages => 'apt-transport-https ca-certificates'
         }
     } elsif $install_npm == true {
         $npm_ensure = present
@@ -28,9 +28,9 @@ class nodejs (
         ensure => $npm_ensure
     }
 
-    # Make sure npm is removed first in case the repository is changed and
-    # it already includes npm.
-    Package<| title == 'npm' |> -> Package['nodejs']
+    # Dependencies
+    Package<| title == 'npm' |> ->
+    Package['nodejs']
 
     # Replicates the nodejs-legacy package functionality
     if ($::osfamily == 'Debian') {

@@ -8,5 +8,7 @@ class apt::update {
         refreshonly => true
     }
 
-    Exec['apt-update'] -> Package <| |>
+    # Dependencies
+    Exec['apt-update'] ->
+    Package <| |>
 }

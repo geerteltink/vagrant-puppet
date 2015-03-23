@@ -16,7 +16,9 @@ define nodejs::npm (
 
         # First (un)install npm, then install nodejs (might include npm) and
         # the npm module last.
-        Package<| title == 'npm' |> -> Package['nodejs'] -> Exec["npm-install-${name}"]
+        Package<| title == 'npm' |> ->
+        Package['nodejs'] ->
+        Exec["npm-install-${name}"]
     } else {
         exec { "npm-remove-${name}":
             command     => "npm remove ${module}",
@@ -25,6 +27,8 @@ define nodejs::npm (
         }
 
         # First remove the module, then npm and nodejs
-        Exec["npm-remove-${name}"] -> Package<| title == 'npm' |> -> Package['nodejs']
+        Exec["npm-remove-${name}"] ->
+        Package<| title == 'npm' |> ->
+        Package['nodejs']
     }
 }

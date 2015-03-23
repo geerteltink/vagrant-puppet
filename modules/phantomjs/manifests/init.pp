@@ -19,42 +19,42 @@ class phantomjs ($version = '1.9.8') {
 
     file { '/var/phantomjs':
         ensure => directory,
-        before => Exec['phantomjs-retrieve'];
+        before => Exec['phantomjs-retrieve']
     }
 
     exec { 'phantomjs-retrieve':
         command => "wget $download_url -O /var/phantomjs/${file_name}.tar.bz2",
         path    => ['/bin', '/usr/bin'],
         creates => "/var/phantomjs/${file_name}.tar.bz2",
-        require => Package['libfontconfig1', 'wget'];
+        require => Package['libfontconfig1', 'wget']
     }
 
     exec { 'phantomjs-unpack':
         command => "tar xjf /var/phantomjs/${file_name}.tar.bz2 -C /usr/share",
         path    => ['/bin', '/usr/bin'],
         creates => "/usr/share/${file_name}",
-        require => Exec['phantomjs-retrieve'];
+        require => Exec['phantomjs-retrieve']
     }
 
     file { '/usr/local/share/phantomjs':
         ensure => 'link',
         force => true,
         target => "/usr/share/${file_name}/bin/phantomjs",
-        require => Exec['phantomjs-unpack'];
+        require => Exec['phantomjs-unpack']
     }
 
     file { '/usr/local/bin/phantomjs':
         ensure => 'link',
         force => true,
         target => "/usr/share/${file_name}/bin/phantomjs",
-        require => Exec['phantomjs-unpack'];
+        require => Exec['phantomjs-unpack']
     }
 
     file { '/usr/bin/phantomjs':
         ensure => 'link',
         force => true,
         target => "/usr/share/${file_name}/bin/phantomjs",
-        require => Exec['phantomjs-unpack'];
+        require => Exec['phantomjs-unpack']
     }
 
     # Create deamon
@@ -63,13 +63,13 @@ class phantomjs ($version = '1.9.8') {
         owner => 'root',
         group => 'root',
         mode  => '0755',
-        require => [Exec['phantomjs-unpack'], File['/usr/bin/phantomjs']];
+        require => [Exec['phantomjs-unpack'], File['/usr/bin/phantomjs']]
     }
 
     # Start deamon
     service { 'phantomjs':
         enable => true,
         ensure  => running,
-        require => [Exec['phantomjs-unpack'], File['/etc/init.d/phantomjs']];
+        require => [Exec['phantomjs-unpack'], File['/etc/init.d/phantomjs']]
     }
 }

@@ -6,5 +6,7 @@ class apt::upgrade {
         logoutput   => 'on_failure'
     }
 
-    Exec['apt-update'] -> Exec['apt-upgrade']
+    # Dependencies
+    Exec['apt-update'] ->
+    Exec['apt-upgrade']
 }

@@ -32,5 +32,8 @@ class php::composer (
         require => Exec['composer-download', 'composer-update']
     }
 
-    Exec['composer-download'] -> Exec['composer-update'] -> File['composer-permissions']
+    # Dependencies
+    Exec['composer-download'] ->
+    Exec['composer-update'] ->
+    File['composer-permissions']
 }

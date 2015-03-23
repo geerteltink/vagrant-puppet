@@ -42,6 +42,7 @@ class phpmyadmin (
         notify  => Service['apache2']
     }
 
+    # Dependencies
     File[$path] ->
     Exec['phpmyadmin-clone'] ->
     Exec['phpmyadmin-update'] ->

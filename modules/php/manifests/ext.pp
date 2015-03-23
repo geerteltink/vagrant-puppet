@@ -29,5 +29,8 @@ define php::ext (
         }
     }
 
-    Package <| title=='php-cli' |> -> Package <| title=='php-fpm' |> -> Package["${php::params::prefix}-$extension_name"]
+    # Dependencies
+    Package <| title=='php-cli' |> ->
+    Package <| title=='php-fpm' |> ->
+    Package["${php::params::prefix}-$extension_name"]
 }
