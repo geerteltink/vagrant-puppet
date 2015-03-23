@@ -30,7 +30,7 @@ class phpmyadmin (
 
     file { 'phpmyadmin-conf':
         path    => '/etc/apache2/sites-available/20-phpmyadmin.conf',
-        content => template('phpmyadmin/phpmyadmin.conf.erb'),
+        content => template('phpmyadmin/_header.erb', 'phpmyadmin/phpmyadmin.conf.erb'),
         mode    => '0644',
         notify  => Service['apache2']
     }
