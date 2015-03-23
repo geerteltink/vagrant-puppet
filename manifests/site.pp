@@ -116,7 +116,8 @@ $mysql_options = {
         'collation-server' => 'utf8_unicode_ci',
         'character-set-server' => 'utf8',
         'init-connect' => 'SET NAMES utf8',
-        'innodb_file_per_table' => 1
+        'innodb_file_per_table' => 1,
+        'bind-address' => '0.0.0.0'
     }
 }
 
@@ -127,21 +128,18 @@ class { '::mysql::server':
 }
 
 if file('/vagrant/build/db-schema.sql', '/dev/null') != '' {
-    mysql::db { $::hostname:
-        user     => $::hostname,
-        password => $::hostname,
-        host     => 'localhost',
-        grant    => ['ALL'],
-        sql      => '/vagrant/build/db-schema.sql',
-        import_timeout => 900,
-    }
+    $sql = '/vagrant/build/db-schema.sql'
 } else {
-    mysql::db { $::hostname:
-        user     => $::hostname,
-        password => $::hostname,
-        host     => 'localhost',
-        grant    => ['ALL']
-    }
+    $sql = undef
+}
+mysql::db { $::hostname:
+    user     => $::hostname,
+    password => $::hostname,
+    host     => '%',
+    grant    => ['ALL'],
+    sql      => $sql,
+    import_timeout => 900,
+    enforce_sql => false
 }
 
 #
