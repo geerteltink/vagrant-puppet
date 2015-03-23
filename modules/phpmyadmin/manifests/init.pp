@@ -1,9 +1,9 @@
 class phpmyadmin (
-    $source = 'https://github.com/phpmyadmin/phpmyadmin.git',
-    $path   = '/usr/share/phpmyadmin',
-    $user   = 'www-data',
-    $branch = 'STABLE'
-) {
+    $source = $phpmyadmin::params::source,
+    $branch = $phpmyadmin::params::branch
+    $path   = $phpmyadmin::params::path,
+    $user   = $phpmyadmin::params::user,
+) inherits phpmyadmin::params {
 
     if ! defined(Package['git']) {
         package { 'git': ensure => installed }
