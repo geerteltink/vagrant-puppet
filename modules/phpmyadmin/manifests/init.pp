@@ -1,8 +1,8 @@
 class phpmyadmin (
     $source = $phpmyadmin::params::source,
-    $branch = $phpmyadmin::params::branch
+    $branch = $phpmyadmin::params::branch,
     $path   = $phpmyadmin::params::path,
-    $user   = $phpmyadmin::params::user,
+    $user   = $phpmyadmin::params::user
 ) inherits phpmyadmin::params {
 
     if ! defined(Package['git']) {
