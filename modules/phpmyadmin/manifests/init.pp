@@ -1,6 +1,6 @@
 class phpmyadmin (
     $source = 'https://github.com/phpmyadmin/phpmyadmin.git',
-    $path   = '/srv/phpmyadmin',
+    $path   = '/usr/share/phpmyadmin',
     $user   = 'www-data',
     $branch = 'STABLE'
 ) {
