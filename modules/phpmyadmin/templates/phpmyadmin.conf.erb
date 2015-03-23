@@ -1,0 +1,11 @@
+Alias /phpmyadmin <%= @path %>
+<Directory <%= @path %>>
+    Options Indexes FollowSymLinks
+    DirectoryIndex index.php
+    Require all granted
+
+    <FilesMatch "\.php$">
+        SetHandler proxy:unix:/var/run/php5-fpm.sock|fcgi://localhost
+    </FilesMatch>
+
+</Directory>

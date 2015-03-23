@@ -146,6 +146,8 @@ mysql::db { $::hostname:
 # Extra packages
 #
 
+include phpmyadmin
+
 include phantomjs
 
 include nodejs
