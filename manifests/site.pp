@@ -157,6 +157,9 @@ nodejs::npm { 'bower': }
 nodejs::npm { 'gulp': }
 nodejs::npm { 'jshint': }
 nodejs::npm { 'less': }
-nodejs::npm { 'ngrok': }
 nodejs::npm { 'uglify-js': }
 nodejs::npm { 'uglifycss': }
+
+# Running ``ngrok 80`` inside the vagrant box gives an URL which can be used to
+# access the box from the outside world
+nodejs::npm { 'ngrok': }
