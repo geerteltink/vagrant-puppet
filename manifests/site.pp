@@ -69,6 +69,7 @@ apache::vhost { $::fqdn:
     docroot       => '/vagrant/public',
     docroot_group => 'www-data',
     docroot_owner => 'www-data',
+    serveraliases => ['*.ngrok.com'],
     directories => [
         {
             path        => '\.php$',
@@ -156,5 +157,6 @@ nodejs::npm { 'bower': }
 nodejs::npm { 'gulp': }
 nodejs::npm { 'jshint': }
 nodejs::npm { 'less': }
+nodejs::npm { 'ngrok': }
 nodejs::npm { 'uglify-js': }
 nodejs::npm { 'uglifycss': }
