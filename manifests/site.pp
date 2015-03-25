@@ -43,6 +43,11 @@ package { $core_packages:
     ensure => latest
 }
 
+exec { 'git-config-push-default':
+    command => 'git config --global push.default simple',
+    require => Package['git']
+}
+
 #
 # Apache
 #
