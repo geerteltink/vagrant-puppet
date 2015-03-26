@@ -13,6 +13,15 @@ define php::ext (
         $notify = undef
     }
 
+    if $ensure == purged {
+        exec { "php-ext-disable-${extension_name}":
+            command => "php5dismod ${extension_name}",
+            onlyif  => "test -f ${php::params::ext_path}/${extension_name}.ini",
+            require => Package['php-common'],
+            notify  => $notify
+        }
+    }
+
     package { "${php::params::prefix}-${extension_name}":
         ensure  => $ensure,
         require => Package['php-common'],

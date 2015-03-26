@@ -113,6 +113,9 @@ php::ext { 'xdebug':
     ]
 }
 
+# Disable opcache during development
+php::ext { 'opcache': ensure => purged }
+
 #
 # MySQL
 #
