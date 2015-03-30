@@ -53,5 +53,6 @@ class phpmyadmin (
     Exec['phpmyadmin-retrieve'] ->
     Exec['phpmyadmin-unpack'] ->
     File['phpmyadmin-conf'] ->
+    File['phpmyadmin-ini'] ->
     File['phpmyadmin-enable']
 }
