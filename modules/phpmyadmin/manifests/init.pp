@@ -1,6 +1,7 @@
 class phpmyadmin (
     $install_path = $phpmyadmin::params::install_path,
-    $version      = $phpmyadmin::params::version
+    $version      = $phpmyadmin::params::version,
+    $secret       = $phpmyadmin::params::secret
 ) inherits phpmyadmin::params {
 
     $release_name = "RELEASE_${version}"
@@ -29,6 +30,13 @@ class phpmyadmin (
     file { 'phpmyadmin-conf':
         path    => '/etc/apache2/sites-available/20-phpmyadmin.conf',
         content => template('phpmyadmin/_header.erb', 'phpmyadmin/phpmyadmin.conf.erb'),
+        mode    => '0644',
+        notify  => Service['apache2']
+    }
+
+    file { 'phpmyadmin-ini':
+        path    => "${target}/config.inc.php",
+        content => template('phpmyadmin/config.inc.php.erb'),
         mode    => '0644',
         notify  => Service['apache2']
     }
