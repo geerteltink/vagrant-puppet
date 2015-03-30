@@ -31,21 +31,21 @@ class phpmyadmin (
         path    => '/etc/apache2/sites-available/20-phpmyadmin.conf',
         content => template('phpmyadmin/_header.erb', 'phpmyadmin/phpmyadmin.conf.erb'),
         mode    => '0644',
-        notify  => Service['apache2']
+        require => Package['httpd', 'php-fpm'],
+        notify  => Service[$::apache::params::service_name]
     }
 
     file { 'phpmyadmin-ini':
         path    => "${target}/config.inc.php",
         content => template('phpmyadmin/config.inc.php.erb'),
-        mode    => '0644',
-        notify  => Service['apache2']
+        mode    => '0644'
     }
 
     file { 'phpmyadmin-enable':
         ensure => 'link',
         path   => '/etc/apache2/sites-enabled/20-phpmyadmin.conf',
         target => '/etc/apache2/sites-available/20-phpmyadmin.conf',
-        notify  => Service['apache2']
+        notify  => Service[$::apache::params::service_name]
     }
 
     # Dependencies

@@ -14,7 +14,7 @@ class php::fpm (
     service { 'php-fpm-service':
         name    => "${php::params::prefix}-fpm",
         ensure  => running,
-        require => Package['php5-fpm']
+        require => Package['php-fpm']
     }
 
     augeas { 'php-fpm-ini':
