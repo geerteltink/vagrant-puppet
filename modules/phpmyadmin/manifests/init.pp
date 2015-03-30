@@ -1,31 +1,31 @@
 class phpmyadmin (
-    $source = $phpmyadmin::params::source,
-    $branch = $phpmyadmin::params::branch,
-    $path   = $phpmyadmin::params::path,
-    $user   = $phpmyadmin::params::user
+    $source  = $phpmyadmin::params::source,
+    $branch  = $phpmyadmin::params::branch,
+    $user    = $phpmyadmin::params::user,
+    $version = '4_3_13'
 ) inherits phpmyadmin::params {
 
-    if ! defined(Package['git']) {
-        package { 'git': ensure => installed }
+    $file_name = "RELEASE_${version}"
+    $target = "/usr/share"
+    $download_url = "https://github.com/phpmyadmin/phpmyadmin/archive/${file_name}.tar.gz"
+
+    if ! defined(Package['wget']) {
+        package { 'wget': ensure => installed }
     }
 
-    file { $path:
-        ensure => directory,
-        owner  => $user
+    file { '/var/phpmyadmin':
+        ensure => directory
     }
 
-    # Download a single phpmyadmin branch only to speed things up
-    exec { 'phpmyadmin-clone':
-        command => "git clone $source --depth 1 --branch $branch --single-branch .",
-        cwd     => $path,
-        creates => "$path/.git",
-        require => Package['git', 'apache2', 'php-fpm']
+    exec { 'phpmyadmin-retrieve':
+        command => "wget $download_url -O /var/phpmyadmin/${file_name}.tar.gz",
+        creates => "/var/phpmyadmin/${file_name}.tar.gz",
+        require => Package['wget']
     }
 
-    # Update phpmyadmin
-    exec { 'phpmyadmin-update':
-        command => "git pull",
-        cwd     => $path
+    exec { 'phpmyadmin-unpack':
+        command => "tar -xvzf /var/phpmyadmin/${file_name}.tar.gz -C ${target}",
+        creates => "${target}/${file_name}"
     }
 
     file { 'phpmyadmin-conf':
@@ -43,9 +43,9 @@ class phpmyadmin (
     }
 
     # Dependencies
-    File[$path] ->
-    Exec['phpmyadmin-clone'] ->
-    Exec['phpmyadmin-update'] ->
+    File['/var/phpmyadmin'] ->
+    Exec['phpmyadmin-retrieve'] ->
+    Exec['phpmyadmin-unpack'] ->
     File['phpmyadmin-conf'] ->
     File['phpmyadmin-enable']
 }
