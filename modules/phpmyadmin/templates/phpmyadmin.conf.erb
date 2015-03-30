@@ -1,5 +1,5 @@
-Alias /phpmyadmin <%= @target %>/<%= @file_name %>
-<Directory <%= @target %>/<%= @file_name %>>
+Alias /phpmyadmin <%= @target %>
+<Directory <%= @target %>>
     Options FollowSymLinks
     DirectoryIndex index.php
 
@@ -16,11 +16,11 @@ Alias /phpmyadmin <%= @target %>/<%= @file_name %>
 
 </Directory>
 
-<Directory <%= @target %>/<%= @file_name %>/libraries>
+<Directory <%= @target %>/libraries>
     Order Deny,Allow
     Deny from All
 </Directory>
-<Directory <%= @target %>/<%= @file_name %>/setup/lib>
+<Directory <%= @target %>/setup/lib>
     Order Deny,Allow
     Deny from All
 </Directory>

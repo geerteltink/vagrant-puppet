@@ -1,13 +1,11 @@
 class phpmyadmin (
-    $source  = $phpmyadmin::params::source,
-    $branch  = $phpmyadmin::params::branch,
-    $user    = $phpmyadmin::params::user,
-    $version = '4_3_13'
+    $install_path = $phpmyadmin::params::install_path,
+    $version      = $phpmyadmin::params::version
 ) inherits phpmyadmin::params {
 
-    $file_name = "RELEASE_${version}"
-    $target = "/usr/share"
-    $download_url = "https://github.com/phpmyadmin/phpmyadmin/archive/${file_name}.tar.gz"
+    $release_name = "RELEASE_${version}"
+    $target = "${$install_path}/phpmyadmin-${release_name}"
+    $source = "https://github.com/phpmyadmin/phpmyadmin/archive/${release_name}.tar.gz"
 
     if ! defined(Package['wget']) {
         package { 'wget': ensure => installed }
@@ -18,14 +16,14 @@ class phpmyadmin (
     }
 
     exec { 'phpmyadmin-retrieve':
-        command => "wget $download_url -O /var/phpmyadmin/${file_name}.tar.gz",
-        creates => "/var/phpmyadmin/${file_name}.tar.gz",
+        command => "wget $source -O /var/phpmyadmin/${release_name}.tar.gz",
+        creates => "/var/phpmyadmin/${release_name}.tar.gz",
         require => Package['wget']
     }
 
     exec { 'phpmyadmin-unpack':
-        command => "tar -xvzf /var/phpmyadmin/${file_name}.tar.gz -C ${target}",
-        creates => "${target}/${file_name}"
+        command => "tar -xvzf /var/phpmyadmin/${release_name}.tar.gz -C ${install_path}",
+        creates => "${target}"
     }
 
     file { 'phpmyadmin-conf':

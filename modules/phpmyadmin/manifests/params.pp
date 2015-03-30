@@ -4,4 +4,7 @@ class phpmyadmin::params {
     $branch = 'STABLE'
     $path   = '/usr/share/phpmyadmin'
     $user   = 'www-data'
+
+    $install_path = '/usr/share'
+    $version      = '4_3_13'
 }
