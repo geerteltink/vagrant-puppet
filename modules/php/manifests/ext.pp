@@ -16,7 +16,7 @@ define php::ext (
     if $ensure == purged {
         exec { "php-ext-disable-${extension_name}":
             command => "php5dismod ${extension_name}",
-            onlyif  => "test -f ${php::params::ext_path}/${extension_name}.ini",
+            onlyif  => "test -f ${cli_mod_path}/${extension_name}.ini -o -f ${fpm_mod_path}/${extension_name}.ini",
             require => Package['php-common'],
             notify  => $notify
         }
