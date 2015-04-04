@@ -58,12 +58,6 @@ class { 'apache':
 # MPM worker
 class { 'apache::mod::worker': }
 
-# The missing mod_proxy_fcgi class
-class apache::mod::proxy_fcgi {
-    include ::apache::params
-    ::apache::mod { 'proxy_fcgi': }
-}
-
 # Apache modules authz_host and log_config are core mods
 class { 'apache::mod::alias': }
 class { 'apache::mod::dir': }
@@ -73,7 +67,10 @@ class { 'apache::mod::negotiation': }
 class { 'apache::mod::setenvif': }
 class { 'apache::mod::rewrite': }
 class { 'apache::mod::proxy': }
-class { 'apache::mod::proxy_fcgi': }
+
+# Enable mods without classes
+apache::mod { 'env': }
+apache::mod { 'proxy_fcgi': }
 
 # Setup vhosts from hiera config
 create_resources('apache::vhost', hiera_hash('apache::vhosts'))
