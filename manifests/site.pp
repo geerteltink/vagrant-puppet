@@ -96,7 +96,7 @@ php::ext { 'mysql': }
 php::ext { 'sqlite': }
 
 # Setup php mods from hiera config
-create_resources('php::ext', hiera_hash('php::exts'))
+create_resources('php::ext', hiera_hash('php::extensions'))
 
 #
 # MySQL
@@ -107,7 +107,7 @@ class { 'mysql::server':
 }
 
 # Create database from hiera config
-create_resources('mysql::db', hiera_hash('mysql::db'))
+create_resources('mysql::db', hiera_hash('mysql::databases'))
 
 #
 # Include extra puppet classes

@@ -49,7 +49,7 @@ apache::vhosts:
 # PHP
 #
 
-php::exts:
+php::extensions:
   xdebug:
     ini_changes:
       - 'set .anon/xdebug.remote_enable On'
@@ -87,7 +87,7 @@ mysql::server::override_options:
     innodb_file_per_table: 1
     innodb_flush_log_at_trx_commit: 1
 
-mysql::db:
+mysql::databases:
   vagrant:
     user: 'vagrant'
     password: 'vagrant'
