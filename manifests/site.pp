@@ -120,9 +120,18 @@ $mysql_options = {
         'collation-server' => 'utf8_unicode_ci',
         'character-set-server' => 'utf8',
         'init-connect' => 'SET NAMES utf8',
-        'innodb_file_per_table' => 1,
         'bind-address' => '0.0.0.0',
-        'performance_schema' => 0
+        'performance_schema' => 0,
+        'key_buffer_size' => '16M',
+        # Safefy
+        'max_allowed_packet' => '16M',
+        'sql_mode' => 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_AUTO_VALUE_ON_ZERO,NO_ENGINE_SUBSTITUTION,NO_ZERO_DATE,NO_ZERO_IN_DATE,ONLY_FULL_GROUP_BY',
+        # Caches and Limits
+        'max_connections' => '128',
+        'table_open_cache' => '2048',
+        # InnoDB
+        'innodb_file_per_table' => '1',
+        'innodb_flush_log_at_trx_commit' => '1'
     }
 }
 
