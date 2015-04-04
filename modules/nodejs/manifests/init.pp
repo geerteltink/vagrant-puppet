@@ -1,7 +1,8 @@
 class nodejs (
-    $install_npm = true,
-    $use_nodesource = true
-) {
+    $install_npm    = $nodejs::params::install_npm,
+    $use_nodesource = $nodejs::params::use_nodesource,
+    $npm_packages   = $nodejs::params::npm_packages
+) inherits nodejs::params {
 
     if $use_nodesource == true {
         # npm is already included
@@ -44,5 +45,10 @@ class nodejs (
             target  => '/usr/share/man/man1/nodejs.1.gz',
             require => Package['nodejs']
         }
+    }
+
+    # Install packages
+    if ($npm_packages) {
+        nodejs::npm { $npm_packages: }
     }
 }
