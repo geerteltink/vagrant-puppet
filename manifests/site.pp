@@ -48,7 +48,28 @@ package { $core_packages:
 #
 
 class { 'apache':
+    default_mods  => false,
     default_vhost => false,
+    log_level     => 'error',
+    mpm_module    => false
+}
+
+# worker MPM
+# StartServers: initial number of server processes to start
+# MaxClients: maximum number of simultaneous client connections
+# MinSpareThreads: minimum number of worker threads which are kept spare
+# MaxSpareThreads: maximum number of worker threads which are kept spare
+# ThreadsPerChild: constant number of worker threads in each server process
+# MaxRequestsPerChild: maximum number of requests a server process serves
+class { 'apache::mod::worker':
+    startservers        => '1',
+    serverlimit         => '4',
+    maxclients          => '16',
+    minsparethreads     => '8',
+    maxsparethreads     => '16',
+    threadsperchild     => '32',
+    maxrequestsperchild => '256',
+    threadlimit         => '32'
 }
 
 # The missing mod_proxy_fcgi class
@@ -57,10 +78,16 @@ class apache::mod::proxy_fcgi {
     ::apache::mod { 'proxy_fcgi': }
 }
 
-# Install apache modules
-apache::mod { 'rewrite': }
-apache::mod { 'proxy': }
-apache::mod { 'proxy_fcgi': }
+# Apache modules authz_host and log_config are core mods
+class { 'apache::mod::alias': }
+class { 'apache::mod::dir': }
+class { 'apache::mod::mime': }
+class { 'apache::mod::mime_magic': }
+class { 'apache::mod::negotiation': }
+class { 'apache::mod::setenvif': }
+class { 'apache::mod::rewrite': }
+class { 'apache::mod::proxy': }
+class { 'apache::mod::proxy_fcgi': }
 
 # Setup default vhost for the vagrant dir
 apache::vhost { $::fqdn:
@@ -70,6 +97,7 @@ apache::vhost { $::fqdn:
     docroot_group => 'www-data',
     docroot_owner => 'www-data',
     serveraliases => ['*.ngrok.com'],
+    access_log    => false,
     directories => [
         {
             path        => '\.php$',
