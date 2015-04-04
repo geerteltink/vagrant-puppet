@@ -121,7 +121,8 @@ $mysql_options = {
         'character-set-server' => 'utf8',
         'init-connect' => 'SET NAMES utf8',
         'innodb_file_per_table' => 1,
-        'bind-address' => '0.0.0.0'
+        'bind-address' => '0.0.0.0',
+        'performance_schema' => 0
     }
 }
 
