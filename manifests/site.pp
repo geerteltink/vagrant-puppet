@@ -42,6 +42,8 @@ apt::ppa { 'ppa:ondrej/apache2': }
 apt::ppa { 'ppa:ondrej/php5-5.6': }
 apt::ppa { 'ppa:ondrej/mysql-5.6': }
 apt::key { '14AA40EC0831756756D7F66C4F4EA0AAE5267A6C': }
+apt::ppa { 'ppa:git-core/ppa': }
+apt::key { 'E1DD270288B4E6030699E45FA1715D88E1DF1F24': }
 
 #
 # Apache
