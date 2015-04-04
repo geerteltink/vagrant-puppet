@@ -17,10 +17,8 @@ Alias /phpmyadmin <%= @target %>
 </Directory>
 
 <Directory <%= @target %>/libraries>
-    Order Deny,Allow
-    Deny from All
+    Require all denied
 </Directory>
 <Directory <%= @target %>/setup/lib>
-    Order Deny,Allow
-    Deny from All
+    Require all denied
 </Directory>
