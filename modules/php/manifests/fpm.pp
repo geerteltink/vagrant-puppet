@@ -1,6 +1,7 @@
 class php::fpm (
-    $ensure      = $php::params::ensure,
-    $ini_changes = $php::params::fpm_ini_changes
+    $ensure       = $php::params::ensure,
+    $ini_changes  = $php::params::fpm_ini_changes,
+    $pool_changes = $php::params::fpm_pool_changes
 ) inherits php::params {
 
     include php
@@ -21,6 +22,14 @@ class php::fpm (
         lens    => 'PHP.lns',
         incl    => "${php::params::fpm_ini}",
         changes => $ini_changes,
+        require => Package['php-fpm'],
+        notify  => Service['php-fpm-service']
+    }
+
+    augeas { 'php-fpm-pool':
+        lens    => 'PHP.lns',
+        incl    => "${php::params::fpm_pool}",
+        changes => $pool_changes,
         require => Package['php-fpm'],
         notify  => Service['php-fpm-service']
     }

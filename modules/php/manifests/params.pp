@@ -19,6 +19,21 @@ class php::params {
         'set PHP/track_errors On',
         'set Date/date.timezone Europe/Amsterdam'
     ]
+    $fpm_pool     = '/etc/php5/fpm/pool.d/www.conf'
+    $fpm_pool_changes = [
+        'set global/emergency_restart_threshold 5',
+        'set global/emergency_restart_interval 1m',
+        'set www/pm ondemand',
+        'set www/pm.max_children 8',
+        'set www/pm.process_idle_timeout 10s',
+        'set www/pm.max_requests 256',
+        #'set www/pm dynamic',
+        #'set www/pm.max_children 8',
+        #'set www/pm.start_servers 2',
+        #'set www/pm.min_spare_servers 2',
+        #'set www/pm.max_spare_servers 4',
+        #'set www/pm.max_requests 256'
+    ]
 
     $composer_source  = 'https://getcomposer.org/composer.phar'
     $composer_target  = '/usr/local/bin/composer'
