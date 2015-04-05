@@ -102,9 +102,10 @@ mysql::databases:
 #
 
 classes:
-  - nodejs
-  - phantomjs
-  - phpmyadmin
+  - 'core::bash'
+  - 'nodejs'
+  - 'phantomjs'
+  - 'phpmyadmin'
 
 #
 # nodejs npm packages
