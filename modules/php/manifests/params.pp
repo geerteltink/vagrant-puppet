@@ -7,7 +7,7 @@ class php::params {
     $cli_mod_path = '/etc/php5/cli/conf.d'
     $cli_ini      = '/etc/php5/cli/php.ini'
     $cli_ini_changes = [
-        'set Date/date.timezone Europe/Amsterdam'
+        'set Date/date.timezone UTC'
     ]
 
     $fpm_mod_path = '/etc/php5/cli/conf.d'
@@ -17,7 +17,7 @@ class php::params {
         'set PHP/display_errors On',
         'set PHP/display_startup_errors On',
         'set PHP/track_errors On',
-        'set Date/date.timezone Europe/Amsterdam'
+        'set Date/date.timezone UTC'
     ]
     $fpm_pool     = '/etc/php5/fpm/pool.d/www.conf'
     $fpm_pool_changes = [
