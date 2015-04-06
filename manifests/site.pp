@@ -75,6 +75,15 @@ apache::mod { 'proxy_fcgi': }
 # Setup vhosts from hiera config
 create_resources('apache::vhost', hiera_hash('apache::vhosts'))
 
+# Make apache logs accessible
+file { '/var/log/apache2':
+    ensure  => 'directory',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    require => Package['apache2']
+}
+
 #
 # PHP
 #
