@@ -33,4 +33,12 @@ class php::fpm (
         require => Package['php-fpm'],
         notify  => Service['php-fpm-service']
     }
+
+    file { 'php-fpm-log':
+        path    => "/var/log/${php::params::prefix}-fpm.log",
+        ensure  => 'file',
+        mode    => '0644',
+        require => Package['php-fpm'],
+        notify  => Service['php-fpm-service']
+    }
 }

@@ -21,18 +21,18 @@ class php::params {
     ]
     $fpm_pool     = '/etc/php5/fpm/pool.d/www.conf'
     $fpm_pool_changes = [
+        # Restart the deamon once in a while
         'set global/emergency_restart_threshold 5',
         'set global/emergency_restart_interval 1m',
+        # Some tuning
         'set www/pm ondemand',
         'set www/pm.max_children 8',
         'set www/pm.process_idle_timeout 10s',
         'set www/pm.max_requests 256',
-        #'set www/pm dynamic',
-        #'set www/pm.max_children 8',
-        #'set www/pm.start_servers 2',
-        #'set www/pm.min_spare_servers 2',
-        #'set www/pm.max_spare_servers 4',
-        #'set www/pm.max_requests 256'
+        # Enable error logging
+        "set www/php_admin_value\\[error_log\\] /var/log/${prefix}-fpm.log",
+        'set www/php_admin_flag\[log_errors\] on',
+        'set www/catch_workers_output yes'
     ]
 
     $composer_source  = 'https://getcomposer.org/composer.phar'
