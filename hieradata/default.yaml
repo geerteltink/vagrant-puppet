@@ -13,7 +13,7 @@
 #
 
 vagrant:
-  #hostname: "devbox.dev"
+  ip: '192.168.10.10'
   box: 'ubuntu/trusty64'
   memory: 2048
   cpus: 1
@@ -109,6 +109,8 @@ mysql::databases:
     password: 'vagrant'
     host: '%'
     grant: 'ALL'
+    charset: 'utf8'
+    collate: 'utf8_unicode_ci'
     enforce_sql: false
     # Optional default sql schema
     sql: '/vagrant/build/db-schema.sql'
