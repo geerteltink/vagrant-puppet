@@ -14,10 +14,11 @@
 
 vagrant:
   ip: '192.168.10.10'
+  provider: 'virtualbox'
   box: 'ubuntu/trusty64'
   memory: 2048
   cpus: 1
-  gui: false
+  #gui: false
   #puppet_options: '--verbose --debug'
 
 #
@@ -119,12 +120,17 @@ mysql::databases:
 #
 # Extra puppet classes to include
 #
+# Available classes
+#   - 'core::bash'
+#   - 'nodejs'
+#   - 'phantomjs'
+#   - 'phpmyadmin'
+#
 
 classes:
   - 'core::bash'
   - 'nodejs'
   - 'phantomjs'
-  - 'phpmyadmin'
 
 #
 # nodejs npm packages
