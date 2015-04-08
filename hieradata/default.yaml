@@ -9,6 +9,18 @@
 #
 
 #
+# Vagrant config
+#
+
+vagrant:
+  #hostname: "devbox.dev"
+  box: 'ubuntu/trusty64'
+  memory: 2048
+  cpus: 1
+  gui: false
+  #puppet_options: '--verbose --debug'
+
+#
 # Apache
 #
 
