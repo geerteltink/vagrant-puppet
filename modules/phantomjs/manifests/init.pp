@@ -35,39 +35,41 @@ class phantomjs ($version = '1.9.8') {
     }
 
     file { '/usr/local/share/phantomjs':
-        ensure => 'link',
-        force => true,
-        target => "/usr/share/${file_name}/bin/phantomjs",
+        ensure  => 'link',
+        force   => true,
+        target  => "/usr/share/${file_name}/bin/phantomjs",
         require => Exec['phantomjs-unpack']
     }
 
     file { '/usr/local/bin/phantomjs':
-        ensure => 'link',
-        force => true,
-        target => "/usr/share/${file_name}/bin/phantomjs",
+        ensure  => 'link',
+        force   => true,
+        target  => "/usr/share/${file_name}/bin/phantomjs",
         require => Exec['phantomjs-unpack']
     }
 
     file { '/usr/bin/phantomjs':
-        ensure => 'link',
-        force => true,
-        target => "/usr/share/${file_name}/bin/phantomjs",
+        ensure  => 'link',
+        force   => true,
+        target  => "/usr/share/${file_name}/bin/phantomjs",
         require => Exec['phantomjs-unpack']
     }
 
     # Create deamon
     file { '/etc/init.d/phantomjs':
         content => template('phantomjs/phantomjs-deamon.erb'),
-        owner => 'root',
-        group => 'root',
-        mode  => '0755',
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0755',
+        notify  => Service['phantomjs'],
         require => [Exec['phantomjs-unpack'], File['/usr/bin/phantomjs']]
     }
 
     # Start deamon
     service { 'phantomjs':
-        enable => true,
-        ensure  => running,
-        require => [Exec['phantomjs-unpack'], File['/etc/init.d/phantomjs']]
+        enable     => true,
+        ensure     => running,
+        hasrestart => true,
+        require    => [Exec['phantomjs-unpack'], File['/etc/init.d/phantomjs']]
     }
 }
