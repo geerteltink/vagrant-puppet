@@ -32,6 +32,15 @@ package { $core_packages:
 }
 
 #
+# Remove unused packages
+#
+
+$remove_packages = ['chef', 'chef-zero', 'ohai']
+package { $remove_packages:
+    ensure => purged
+}
+
+#
 # Update apt
 #
 
