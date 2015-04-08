@@ -87,6 +87,7 @@ mysql::server::override_options:
     performance_schema: 1
     interactive_timeout: 300
     wait_timeout: 300
+    skip-name-resolve: 1
 
     # Safety
     max_allowed_packet: '16M'
