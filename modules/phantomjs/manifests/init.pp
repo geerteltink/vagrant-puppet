@@ -24,14 +24,12 @@ class phantomjs ($version = '1.9.8') {
 
     exec { 'phantomjs-retrieve':
         command => "wget $download_url -O /var/phantomjs/${file_name}.tar.bz2",
-        path    => ['/bin', '/usr/bin'],
         creates => "/var/phantomjs/${file_name}.tar.bz2",
         require => Package['libfontconfig1', 'wget']
     }
 
     exec { 'phantomjs-unpack':
         command => "tar xjf /var/phantomjs/${file_name}.tar.bz2 -C /usr/share",
-        path    => ['/bin', '/usr/bin'],
         creates => "/usr/share/${file_name}",
         require => Exec['phantomjs-retrieve']
     }

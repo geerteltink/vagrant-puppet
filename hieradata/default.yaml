@@ -22,6 +22,12 @@ vagrant:
   #puppet_options: '--verbose --debug'
 
 #
+# Git
+#
+#git::user_name: 'User Name'
+#git::user_email: 'username@example.com'
+
+#
 # Apache
 #
 

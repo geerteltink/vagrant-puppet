@@ -1,0 +1,11 @@
+[user]
+<% if @user_name -%>
+    name = <%= @user_name %>
+<% end -%>
+<% if @user_email -%>
+    email = <%= @user_email %>
+<% end -%>
+[push]
+    default = <%= @push_default %>
+[color]
+    ui = true
