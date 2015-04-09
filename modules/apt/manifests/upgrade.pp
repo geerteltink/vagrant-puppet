@@ -1,9 +1,10 @@
 class apt::upgrade {
 
-    # Run apt-get update when asked for
+    # Run apt-get update only if needed
     exec { 'apt-upgrade':
-        command     => 'apt-get -y upgrade',
-        logoutput   => 'on_failure'
+        command   => 'apt-get -y upgrade',
+        onlyif    => 'test `apt-get -s -o Debug::NoLocking=true upgrade | grep -c ^Inst` != 0',
+        logoutput => 'on_failure'
     }
 
     # Dependencies
