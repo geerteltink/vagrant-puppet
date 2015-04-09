@@ -3,13 +3,20 @@
 # This file contains the default configuration for puppet.
 # Copy this file to /vagrant/build/vagrant.yaml and edit settings as please.
 #
+# If you want to know more about configuration settings, check the readme files
+# in the `modules` path.
+#
 # Test your custom hiera config inside your vagrant box with:
 #
-#   hiera -c /vagrant/vendor/twentyfirsthall/vagrant-puppet/manifests/hiera.yaml <key>
+#   hiera -c /vagrant/vendor/twentyfirsthall/vagrant-puppet/hieradata/hiera.yaml <key>
 #
 
 #
 # Vagrant config
+#
+# The standard ubuntu/trusty64 box only supports virtualbox. If you need another
+# provider get an ubuntu box from `https://atlas.hashicorp.com/puppetlabs/boxes/`.
+# Any puppet or nocm box will do.
 #
 
 vagrant:
