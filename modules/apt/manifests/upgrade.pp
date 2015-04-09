@@ -1,10 +1,10 @@
 class apt::upgrade (
     $dist_upgrade = $::apt::params::upgrade_dist,
-    $autoremove = $::apt::params::upgrade_remove
+    $autoremove   = $::apt::params::upgrade_remove
 ) {
 
-    validate_bool($upgrade_dist)
-    if $upgrade_dist {
+    validate_bool($dist_upgrade)
+    if $dist_upgrade {
         Exec <| title=='apt-dist-upgrade' |> {
             refreshonly => false
         }
