@@ -4,11 +4,13 @@ class apt::params {
     $root           = '/etc/apt'
     $sources_list_d = "${root}/sources.list.d"
 
-    # apt settings
+    # apt
     $update_frequency = 86400
 
-    # apt::ppa settings
-    $ppa_options = '-y'
+    # apt::ppa
+    $ppa_options    = '-y'
 
-    $dist_upgrade = false
+    # apt::upgrade
+    $upgrade_dist   = false
+    $upgrade_remove = false
 }
