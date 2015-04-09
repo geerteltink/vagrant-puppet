@@ -47,13 +47,11 @@ class redis (
         require => Package['redis']
     }
 
-    # disable Linux kernel feature transparent huge pages
-    #   if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
-    #       echo never > /sys/kernel/mm/transparent_hugepage/enabled
-    #   fi
+    # Disable Linux kernel feature transparent huge pages
     exec { 'redis-set-transparent-hugepage':
         command => 'echo never > /sys/kernel/mm/transparent_hugepage/enabled',
         onlyif  => 'test -f /sys/kernel/mm/transparent_hugepage/enabled',
+        unless  => 'cat /sys/kernel/mm/transparent_hugepage/enabled | grep "\[never\]"',
         require => Package['redis']
     }
 }
