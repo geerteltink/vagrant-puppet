@@ -9,4 +9,6 @@ class apt::params {
 
     # apt::ppa settings
     $ppa_options = '-y'
+
+    $dist_upgrade = false
 }
