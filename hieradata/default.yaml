@@ -38,9 +38,6 @@ vagrant:
 # Apache
 #
 
-apache:
-  log_level: 'error'
-
 apache::mod::worker:
   startservers: 1
   serverlimit: 4

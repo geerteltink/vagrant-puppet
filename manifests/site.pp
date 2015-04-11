@@ -65,7 +65,9 @@ class { 'git': }
 class { 'apache':
     default_mods  => false,
     default_vhost => false,
-    mpm_module    => false
+    mpm_module    => false,
+    log_level     => 'error',
+    sendfile      => 'Off'
 }
 
 # MPM worker
