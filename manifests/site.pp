@@ -107,9 +107,6 @@ include php::cli
 include php::fpm
 include php::composer
 
-# Disable opcache during development
-php::ext { 'opcache': ensure => purged }
-
 # Install basic extensions
 php::ext { 'curl': }
 php::ext { 'gd': }

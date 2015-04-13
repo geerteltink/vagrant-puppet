@@ -41,4 +41,11 @@ class php::fpm (
         require => Package['php-fpm'],
         notify  => Service['php-fpm-service']
     }
+/*
+    exec { "php-ext-disable-opcache":
+        command => "php5dismod opcache",
+        onlyif  => "test -f ${fpm_mod_path}/05-opcache.ini",
+        require => Package['php-fpm'],
+        notify  => Service['php-fpm-service']
+    }*/
 }

@@ -10,7 +10,7 @@ class php::params {
         'set Date/date.timezone UTC'
     ]
 
-    $fpm_mod_path = '/etc/php5/cli/conf.d'
+    $fpm_mod_path = '/etc/php5/fpm/conf.d'
     $fpm_ini      = '/etc/php5/fpm/php.ini'
     $fpm_ini_changes = [
         'set PHP/error_reporting E_ALL',
