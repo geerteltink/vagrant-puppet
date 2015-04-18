@@ -64,14 +64,31 @@ apache::mod::worker:
   threadlimit: 32
 
 apache::vhosts:
+  # Default vhost
   vagrant:
     default_vhost: true
     port: 80
     docroot: '/vagrant/public'
-    docroot_group: 'www-data'
-    docroot_owner: 'www-data'
+    docroot_group: 'vagrant'
+    docroot_owner: 'vagrant'
     serveraliases:
       - '*.ngrok.com'
+    access_log: false
+    directories:
+      - path: '\.php$'
+        provider: 'filesmatch'
+        sethandler: 'proxy:unix:/var/run/php5-fpm.sock|fcgi://localhost'
+      - path: '/vagrant/public'
+        allow_override:
+          - 'All'
+        require: 'all granted'
+        directoryindex: 'index.php index.html'
+
+  # SSL vhost
+  vagrant-ssl:
+    port: 443
+    ssl: true
+    docroot: '/vagrant/public'
     access_log: false
     directories:
       - path: '\.php$'
