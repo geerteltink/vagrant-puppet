@@ -25,6 +25,10 @@ vagrant:
   box: 'ubuntu/trusty64'
   memory: 2048
   cpus: 1
+  folders:
+    - map: '.'
+      to: '/vagrant'
+      #type: 'nfs'
   #gui: false
   #puppet_options: '--verbose --debug'
 
