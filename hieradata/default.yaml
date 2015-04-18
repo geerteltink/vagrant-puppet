@@ -25,16 +25,27 @@ vagrant:
   box: 'ubuntu/trusty64'
   memory: 2048
   cpus: 1
+
+  # Synced folders. As files within these folders are changed, they will be kept
+  # in sync between your local machine and the Homestead environment. You may
+  # configure as many shared folders as necessary.
+  # `type` is optional: [synced folder](https://docs.vagrantup.com/v2/synced-folders/)
+  #
+  # By default NFS sync is ignored on windows. To enable this (windows only !!!)
+  # install the vagrant-winnfsd plugin: `vagrant plugin install vagrant-winnfsd`
   folders:
     - map: '.'
       to: '/vagrant'
       #type: 'nfs'
-  #gui: false
+
+  # Debug options
+  gui: false
   #puppet_options: '--verbose --debug'
 
 #
 # Git
 #
+
 #git::user_name: 'User Name'
 #git::user_email: 'username@example.com'
 
