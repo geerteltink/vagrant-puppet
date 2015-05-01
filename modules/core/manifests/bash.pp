@@ -8,8 +8,8 @@ class core::bash (
         mode  => '0644'
     }
 
-    file { '/home/vagrant/.bash_login':
-        content => template('core/bash_login.erb'),
+    file { '/home/vagrant/.bash_profile':
+        content => template('core/bash_profile.erb'),
         owner => 'vagrant',
         group => 'vagrant',
         mode  => '0644'
