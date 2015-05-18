@@ -6,7 +6,4 @@
   :datadir: /vagrant
 
 :hierarchy:
-  - "build/vagrant"
-  - "vendor/twentyfirsthall/vagrant-puppet/hieradata/default"
-
-#:merge_behavior: deeper
+  - ".vagrant/config"
