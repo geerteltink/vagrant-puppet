@@ -1,7 +1,7 @@
 ---
 #
 # This file contains the default configuration for puppet.
-# Copy this file to /vagrant/build/vagrant.yaml and edit settings as please.
+# Copy this file to <project_path>/vagrant.yaml and edit its settings.
 #
 # If you want to know more about configuration settings, check the readme files
 # in the `modules` path.
@@ -170,7 +170,6 @@ mysql::databases:
 #
 
 classes:
-  - 'core::bash'
   - 'nodejs'
   - 'phantomjs'
 
