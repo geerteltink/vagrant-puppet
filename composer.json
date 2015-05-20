@@ -1,6 +1,6 @@
 {
     "name"        : "xtreamwayz/vagrant-puppet",
-    "description" : "Compose4r managed puppet modules for xtreamwayz/vagrant-devbox",
+    "description" : "Composer managed puppet modules for xtreamwayz/vagrant-devbox",
     "type"        : "project",
     "keywords": [
         "Vagrant",
