@@ -1,3 +1,24 @@
+=======
+##2015-05-12 - Supported Release 2.0.0
+###Summary
+
+This is a major release. Includes re-implementation of concat to use native Type and Providers, resulting in significantly improved performance and testability. Also includes a bugfix to alpha ordering of fragments.
+
+####Features
+- Re-implementation of concat to use native Type and Providers.
+
+####Bugfixes
+- Fixes a bug in alpha ordering of fragments.
+
+
+##2015-05-12 - Supported Release 1.2.2
+###Summary
+
+This release includes a bugfix.
+
+####Bugfixes
+- Fixes a bug introduced by MODULES-1700, in handling default retrieval of fragment backup parameter.
+
 ##2015-04-14 - Supported Release 1.2.1
 ###Summary
 
