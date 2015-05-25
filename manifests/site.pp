@@ -63,7 +63,7 @@ class { 'git': }
 #
 
 class { 'apache':
-    default_mods  => false,
+    default_mods  => true,
     default_vhost => false,
     mpm_module    => false,
     log_level     => 'error',
@@ -74,17 +74,10 @@ class { 'apache':
 class { 'apache::mod::worker': }
 
 # Apache modules authz_host and log_config are core mods
-class { 'apache::mod::alias': }
-class { 'apache::mod::dir': }
-class { 'apache::mod::mime': }
-class { 'apache::mod::mime_magic': }
-class { 'apache::mod::negotiation': }
-class { 'apache::mod::setenvif': }
 class { 'apache::mod::rewrite': }
 class { 'apache::mod::proxy': }
 
 # Enable mods without classes
-apache::mod { 'env': }
 apache::mod { 'proxy_fcgi': }
 
 # Setup vhosts from hiera config
