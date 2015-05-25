@@ -1,7 +1,8 @@
 class php::fpm (
     $ensure       = $php::params::ensure,
     $ini_changes  = $php::params::fpm_ini_changes,
-    $pool_changes = $php::params::fpm_pool_changes
+    $pool_changes = $php::params::fpm_pool_changes,
+    $opcache_changes = $php::params::opcache_changes,
 ) inherits php::params {
 
     include php
@@ -34,6 +35,14 @@ class php::fpm (
         notify  => Service['php-fpm-service']
     }
 
+    augeas { 'php-opcache-ini':
+        lens    => 'PHP.lns',
+        incl    => "${php::params::ext_path}/opcache.ini",
+        changes => $opcache_changes,
+        require => Package['php-fpm'],
+        notify  => Service['php-fpm-service']
+    }
+
     file { 'php-fpm-log':
         path    => "/var/log/${php::params::prefix}-fpm.log",
         ensure  => 'file',
@@ -41,11 +50,4 @@ class php::fpm (
         require => Package['php-fpm'],
         notify  => Service['php-fpm-service']
     }
-/*
-    exec { "php-ext-disable-opcache":
-        command => "php5dismod opcache",
-        onlyif  => "test -f ${fpm_mod_path}/05-opcache.ini",
-        require => Package['php-fpm'],
-        notify  => Service['php-fpm-service']
-    }*/
 }

@@ -35,6 +35,11 @@ class php::params {
         'set www/catch_workers_output yes'
     ]
 
+    $opcache_changes = [
+        'set .anon/opcache.revalidate_freq 0',
+        'set .anon/opcache.fast_shutdown 1'
+    ]
+
     $composer_source  = 'https://getcomposer.org/composer.phar'
     $composer_target  = '/usr/local/bin/composer'
     $composer_max_age = 7
