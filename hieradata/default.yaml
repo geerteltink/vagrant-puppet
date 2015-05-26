@@ -182,3 +182,5 @@ nodejs:
     - bower
     - gulp
     - ngrok
+    - uglifycss
+    - uglify-js
