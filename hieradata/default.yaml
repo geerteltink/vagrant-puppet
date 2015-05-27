@@ -184,3 +184,4 @@ nodejs:
     - ngrok
     - uglifycss
     - uglify-js
+    - autoprefixer
